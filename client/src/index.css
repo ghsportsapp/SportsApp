@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar styles for language dropdown */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 6px;
+  }
+  
+  .scrollbar-track-gray-100::-webkit-scrollbar-track {
+    background-color: #f3f4f6;
+    border-radius: 6px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #f3f4f6;
+    border-radius: 6px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+}
+
+/* Base body styles - restore normal padding for most pages */
+body {
+  padding-top: 0;
+}
+
+/* Auth page specific styles - remove padding only for auth page */
+.auth-page {
+  margin: 0;
+  padding: 0;
+}
+
+.auth-page * {
+  box-sizing: border-box;
+}
+
+/* Ensure proper spacing for navbar on all other pages */
+.main-content {
+  padding-top: 80px; /* Add top padding to prevent navbar overlap */
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Sports-themed colors */
+  --sports-blue: hsl(217, 91%, 60%);
+  --victory-green: hsl(158, 64%, 52%);
+  --energy-red: hsl(0, 74%, 42%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+/* Custom Sport Animations */
+@keyframes cricket-hit {
+  0%, 50%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-3px) rotate(-5deg); }
+  75% { transform: translateX(3px) rotate(5deg); }
+}
+
+@keyframes football-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes tennis-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-8px) scale(1.1); }
+  50% { transform: translateY(-4px) scale(1.05); }
+  75% { transform: translateY(-2px) scale(1.02); }
+}
+
+@keyframes badminton-shuttle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(10deg); }
+  50% { transform: translateY(-3px) rotate(-5deg); }
+  75% { transform: translateY(-1px) rotate(3deg); }
+}
+
+@keyframes hockey-hit {
+  0%, 60%, 100% { transform: translateX(0) rotate(0deg); }
+  30% { transform: translateX(-4px) rotate(-8deg); }
+  90% { transform: translateX(2px) rotate(4deg); }
+}
+
+@keyframes kabaddi-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.9; }
+}
+
+@keyframes athletics-run {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(0deg); }
+  75% { transform: translateY(-3px) rotate(2deg); }
+}
+
+.cricket-hit { animation: cricket-hit 2s ease-in-out infinite; }
+.football-spin { animation: football-spin 3s linear infinite; }
+.tennis-bounce { animation: tennis-bounce 1.8s ease-in-out infinite; }
+.badminton-shuttle { animation: badminton-shuttle 2.2s ease-in-out infinite; }
+.hockey-hit { animation: hockey-hit 2.5s ease-in-out infinite; }
+.kabaddi-pulse { animation: kabaddi-pulse 2s ease-in-out infinite; }
+.athletics-run { animation: athletics-run 1.5s ease-in-out infinite; }
+
+/* Slide down and fade animations */
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.4s ease-out forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Custom tab animations and styling */
+.tab-gradient-active {
+  background: linear-gradient(to right, #4B79A1 0%, #283E51 51%, #4B79A1 100%) !important;
+  background-size: 200% auto !important;
+  color: white !important;
+  transition: all 0.3s ease !important;
+}
+
+.tab-gradient-active:hover {
+  background-position: right center !important;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    padding-top: 4rem; /* Add padding for fixed navbar */
+  }
+}
+
+/* Sports App specific styles */
+.sports-gradient {
+  background: linear-gradient(135deg, var(--sports-blue) 0%, hsl(217, 91%, 50%) 100%);
+}
+
+.sports-blue {
+  color: var(--sports-blue);
+}
+
+.bg-sports-blue {
+  background-color: var(--sports-blue);
+}
+
+.victory-green {
+  color: var(--victory-green);
+}
+
+.bg-victory-green {
+  background-color: var(--victory-green);
+}
+
+.energy-red {
+  color: var(--energy-red);
+}
+
+.bg-energy-red {
+  background-color: var(--energy-red);
+}

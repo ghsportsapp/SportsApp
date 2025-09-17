@@ -1,0 +1,27 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Builds
+dist/
+build/
+.next/
+.vite/
+
+# Replit
+.replit
+.upm/
+
+# Local env & secrets
+.env
+.env.*
+
+# User uploads / backups / archives
+uploads/
+attached_assets/
+*.log
+*.tar.gz
+*.zip
+*.bak
