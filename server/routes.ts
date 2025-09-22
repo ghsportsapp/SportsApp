@@ -4,6 +4,7 @@ import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { authenticateAdmin, isAdminAuthenticated, setAdminSession, clearAdminSession } from "./admin-auth";
+import { upload as mediaUpload, handleMediaUpload } from "./storage/mediaService";
 import { z } from "zod";
 import multer from "multer";
 import path from "path";
@@ -128,8 +129,19 @@ const chunkUpload = multer({
 });
 
 export function registerRoutes(app: Express): Server {
-  // Serve static files from uploads directory
-  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+  // Media Upload endpoint
+    app.post('/api/media/upload', mediaUpload.array('files'), async (req, res) => {
+      try {
+        const result = await handleMediaUpload(req);
+        if (result.error) {
+          return res.status(400).json({ error: result.error });
+        }
+        return res.json({ files: result.files });
+      } catch (error) {
+        console.error('Error in media upload:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+    });
   
   // Setup authentication routes
   setupAuth(app);
@@ -290,13 +302,13 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Create a new post
-  app.post("/api/posts", upload.single("media"), async (req, res) => {
+  app.post("/api/posts", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
-      const { type, content, mentions, tags } = req.body;
+      const { type, content, mentions, tags, mediaUrl, mediaType } = req.body;
       
       const postData: any = {
         userId: req.user!.id,
@@ -304,10 +316,10 @@ export function registerRoutes(app: Express): Server {
         content: content || null,
       };
 
-      // Handle media upload
-      if (req.file) {
-        postData.mediaUrl = `/uploads/${req.file.filename}`;
-        postData.mediaType = req.file.mimetype;
+      // Handle media URL from GCS
+      if (mediaUrl && mediaType) {
+        postData.mediaUrl = mediaUrl;
+        postData.mediaType = mediaType;
       }
 
       // Create the post

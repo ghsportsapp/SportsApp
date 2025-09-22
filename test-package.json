@@ -1,0 +1,13 @@
+{
+  "name": "gcs-test",
+  "version": "1.0.0",
+  "description": "Simple test for Google Cloud Storage upload functionality",
+  "main": "test-gcs-upload.js",
+  "scripts": {
+    "test": "node test-gcs-upload.js"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
+    "dotenv": "^16.3.1"
+  }
+}

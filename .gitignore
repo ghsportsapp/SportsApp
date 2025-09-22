@@ -11,6 +11,7 @@ pnpm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
+angad-project-472410-b656ceba9017.json
 
 # Build outputs
 dist/
