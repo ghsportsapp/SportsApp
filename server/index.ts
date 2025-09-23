@@ -20,18 +20,19 @@ app.use(helmet({
       scriptSrc: [
         "'self'", 
         "'unsafe-inline'", 
+        "'unsafe-eval'", // Allow eval for production builds
         "https://www.googletagmanager.com",
         "https://replit.com",
         "https://connect.facebook.net"
-      ], // Allow external scripts including Facebook Pixel
-      connectSrc: ["'self'", "wss:", "https:"], // Only secure connections in production
+      ], 
+      connectSrc: ["'self'", "wss:", "https:"], 
       mediaSrc: ["'self'", "blob:"],
       objectSrc: ["'none'"],
-      frameSrc: ["'none'", "https://www.googletagmanager.com"], // Allow GTM iframe
+      frameSrc: ["'none'", "https://www.googletagmanager.com"],
     },
   },
-  crossOriginEmbedderPolicy: false, // Needed for some features
-  crossOriginOpenerPolicy: false, // Fix COOP header issue
+  crossOriginEmbedderPolicy: false, 
+  crossOriginOpenerPolicy: false, 
 }));
 
 // Enable compression for better performance
