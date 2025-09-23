@@ -17,14 +17,21 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      scriptSrc: ["'self'"], // Strict CSP for production
+      scriptSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "https://www.googletagmanager.com",
+        "https://replit.com",
+        "https://connect.facebook.net"
+      ], // Allow external scripts including Facebook Pixel
       connectSrc: ["'self'", "wss:", "https:"], // Only secure connections in production
       mediaSrc: ["'self'", "blob:"],
       objectSrc: ["'none'"],
-      frameSrc: ["'none'"],
+      frameSrc: ["'none'", "https://www.googletagmanager.com"], // Allow GTM iframe
     },
   },
   crossOriginEmbedderPolicy: false, // Needed for some features
+  crossOriginOpenerPolicy: false, // Fix COOP header issue
 }));
 
 // Enable compression for better performance
