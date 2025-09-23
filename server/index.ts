@@ -8,6 +8,9 @@ import { initializeAdminCredentials } from "./admin-auth";
 
 const app = express();
 
+// Trust proxy for proper protocol detection
+app.set('trust proxy', true);
+
 // Security middleware - Helmet with environment-specific CSP
 const isDevelopment = process.env.NODE_ENV === 'development';
 app.use(helmet({
@@ -28,7 +31,7 @@ app.use(helmet({
       connectSrc: ["'self'", "wss:", "https:"], 
       mediaSrc: ["'self'", "blob:"],
       objectSrc: ["'none'"],
-      frameSrc: ["'none'", "https://www.googletagmanager.com"],
+      frameSrc: ["https://www.googletagmanager.com"], // Fixed: Remove 'none' when allowing sources
     },
   },
   crossOriginEmbedderPolicy: false, 
