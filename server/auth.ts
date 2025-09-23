@@ -346,7 +346,9 @@ export function setupAuth(app: Express) {
 
           // Send password reset email
           try {
-            const emailSent = await emailService.sendPasswordResetEmail(email, resetToken);
+            const baseUrl = `${req.protocol}://${req.get('host')}`;
+            
+            const emailSent = await emailService.sendPasswordResetEmail(email, resetToken, baseUrl);
             if (emailSent) {
               console.log(`✅ Password reset email sent to ${email}`);
             } else {

@@ -20,26 +20,31 @@ Purpose: Send password reset emails to users
 Options: Gmail, Outlook, Yahoo, or custom SMTP server
 ```
 
-**How to set up Email Service (Gmail Example):**
-1. Enable 2-Factor Authentication on your Gmail account
+**How to set up Email Service (Custom Domain + Microsoft 365):**
+1. Enable 2-Step Verification on your Microsoft 365 account:
+   - Go to https://account.microsoft.com/security
+   - Or https://portal.office.com → My Account → Security & privacy
+   - Turn on "Two-step verification"
 2. Generate an App Password:
-   - Go to Google Account settings
-   - Security → 2-Step Verification → App passwords
-   - Generate a password for "Mail"
+   - In security settings, click "Create a new app password"
+   - Choose "Other" as the app type
+   - Name it "SportsApp"
+   - Copy the generated 16-character password
 3. Add these environment variables:
    ```
-   EMAIL_HOST=smtp.gmail.com
+   EMAIL_HOST=smtp.office365.com
    EMAIL_PORT=587
    EMAIL_SECURE=false
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
-   EMAIL_FROM=noreply@sportsapp.com
+   EMAIL_USER=your-email@yourdomain.com
+   EMAIL_PASS=your-16-character-app-password
+   EMAIL_FROM=noreply@yourdomain.com
    APP_BASE_URL=http://localhost:5000
    ```
 
 **For other email providers:**
-- **Outlook/Hotmail**: `smtp-mail.outlook.com`, port `587`
+- **Gmail**: `smtp.gmail.com`, port `587`
 - **Yahoo**: `smtp.mail.yahoo.com`, port `587` 
+- **Regular Outlook**: `smtp-mail.outlook.com`, port `587`
 - **Custom SMTP**: Contact your email provider for settings
 
 ### **2. OpenAI API Key (Required for Cricket Coaching)**

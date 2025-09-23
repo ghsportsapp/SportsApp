@@ -24,7 +24,7 @@ class EmailService {
   private fromAddress: string;
 
   constructor() {
-    this.fromAddress = process.env.EMAIL_FROM || 'noreply@sportsapp.com';
+    this.fromAddress = process.env.EMAIL_USER || 'noreply@sportsapp.com';
     this.initializeTransporter();
   }
 
@@ -154,16 +154,17 @@ Need help? Contact our support team if you didn't request this password reset.
   }
 
   // Send password reset email
-  async sendPasswordResetEmail(userEmail: string, resetToken: string): Promise<boolean> {
+  async sendPasswordResetEmail(userEmail: string, resetToken: string, baseUrl?: string): Promise<boolean> {
     if (!this.transporter) {
       console.error('Email service not configured');
       return false;
     }
 
     try {
-      // Construct reset link
-      const baseUrl = process.env.APP_BASE_URL || 'http://localhost:5000';
-      const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
+      // Use the provided baseUrl (from request) or fallback to localhost for development
+      const appBaseUrl = baseUrl || 'http://localhost:5000';
+      
+      const resetLink = `${appBaseUrl}/reset-password?token=${resetToken}`;
       
       const template = this.getPasswordResetTemplate(resetLink, userEmail);
 
@@ -177,6 +178,7 @@ Need help? Contact our support team if you didn't request this password reset.
 
       const result = await this.transporter.sendMail(mailOptions);
       console.log('✅ Password reset email sent successfully:', result.messageId);
+      console.log(`🔗 Reset link: ${resetLink}`);
       return true;
 
     } catch (error) {
