@@ -1,0 +1,16 @@
+# Add these email configuration variables to your .env file
+
+# Email Service Configuration (Required for Password Reset)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+EMAIL_FROM=noreply@sportsapp.com
+APP_BASE_URL=http://localhost:5000
+
+# Instructions:
+# 1. Replace EMAIL_USER with your actual email
+# 2. Replace EMAIL_PASS with your email app password (not regular password!)
+# 3. For Gmail: Enable 2FA and generate App Password
+# 4. For production: Update APP_BASE_URL to your domain

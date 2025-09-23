@@ -7,6 +7,7 @@ import { promisify } from "util";
 import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { clearAdminSession } from "./admin-auth";
+import { emailService } from "./emailService";
 import { User as SelectUser, forgotPasswordSchema, resetPasswordSchema } from "@shared/schema";
 
 declare global {
@@ -343,7 +344,18 @@ export function setupAuth(app: Express) {
           // Store the hashed token in database
           await storage.createPasswordResetToken(user.id, tokenHash, expiresAt);
 
-          // TODO: Send email with reset link
+          // Send password reset email
+          try {
+            const emailSent = await emailService.sendPasswordResetEmail(email, resetToken);
+            if (emailSent) {
+              console.log(`✅ Password reset email sent to ${email}`);
+            } else {
+              console.error(`❌ Failed to send password reset email to ${email}`);
+            }
+          } catch (emailError) {
+            console.error('Error sending password reset email:', emailError);
+          }
+
           // Log reset token for development only (never in production)
           if (process.env.NODE_ENV !== 'production') {
             console.log(`Development: Password reset token for ${email}: ${resetToken}`);
@@ -448,5 +460,29 @@ export function setupAuth(app: Express) {
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     res.json(req.user);
+  });
+
+  // Test email endpoint (development only)
+  app.post("/api/auth/test-email", async (req, res) => {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const success = await emailService.sendTestEmail(email);
+      if (success) {
+        res.json({ message: "Test email sent successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to send test email" });
+      }
+    } catch (error) {
+      console.error("Test email error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 }

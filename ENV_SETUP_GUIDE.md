@@ -9,10 +9,40 @@ Your SportsApp requires these environment variables to function properly:
 ✅ **NEWS_API_KEY** - Already configured  
 ✅ **SESSION_SECRET** - Already configured  
 ❌ **OPENAI_API_KEY** - **Missing (Required for Cricket Coaching)**
+❌ **EMAIL_CONFIG** - **Missing (Required for Password Reset)**
 
 ## 🚀 **API Keys Setup Instructions**
 
-### **1. OpenAI API Key (Required for Cricket Coaching)**
+### **1. Email Service (Required for Password Reset)**
+```
+Service: SMTP Email Service
+Purpose: Send password reset emails to users
+Options: Gmail, Outlook, Yahoo, or custom SMTP server
+```
+
+**How to set up Email Service (Gmail Example):**
+1. Enable 2-Factor Authentication on your Gmail account
+2. Generate an App Password:
+   - Go to Google Account settings
+   - Security → 2-Step Verification → App passwords
+   - Generate a password for "Mail"
+3. Add these environment variables:
+   ```
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_SECURE=false
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASS=your-app-password
+   EMAIL_FROM=noreply@sportsapp.com
+   APP_BASE_URL=http://localhost:5000
+   ```
+
+**For other email providers:**
+- **Outlook/Hotmail**: `smtp-mail.outlook.com`, port `587`
+- **Yahoo**: `smtp.mail.yahoo.com`, port `587` 
+- **Custom SMTP**: Contact your email provider for settings
+
+### **2. OpenAI API Key (Required for Cricket Coaching)**
 ```
 Service: OpenAI GPT-4o API
 Purpose: AI-powered cricket technique analysis and coaching feedback
