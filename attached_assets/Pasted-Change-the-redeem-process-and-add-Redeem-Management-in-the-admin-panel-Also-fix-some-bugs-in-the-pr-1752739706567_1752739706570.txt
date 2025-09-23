@@ -1,0 +1,51 @@
+Change the redeem process and add Redeem Management in the admin panel. Also fix some bugs in the profile page and edit profile section.
+
+Edit Profile Updates:
+
+Allow user to edit username, full name, bio, and profile picture.
+
+When user changes username (available username), make the new username taken and release the old one (available for others).
+
+On profile picture, add a plus (+) icon. On click, open the gallery to select a new image. After selection, update the profile picture everywhere: feed, profile page, etc.
+
+Fix Bugs in Profile Page:
+
+In post section of user’s profile page, currently nothing is clickable. Make it fully functional like the feed page.
+
+Enable: give point (only on other's profile), comment, delete post, report post, clickable @mentioned usernames, clickable tagged users, etc.
+
+Redeem Process Changes:
+
+When a user clicks Redeem, calculate amount as 1/5 of current points (e.g., 25–29 points = ₹5, 30–34 = ₹6, and so on).
+
+After clicking Redeem, ask for user’s email with a Submit button (if user can redeem 1 or more that 1 rupees (equal or more that 5 points), in case user have less that 5 points, redeem button will be inactive).
+
+Show this disclaimer:
+
+“Our team will reach you within 7 business days. Make sure you have sports content posted and are active on Sportsapp. In case our team finds you ineligible, your points will not be returned.”
+
+After redeeming, set user’s point balance to 0.
+
+Redeem Management (Admin Panel):
+
+Add a new card in admin panel titled Redeem Management.
+
+Maintain a list that updates in real-time after every redemption.
+
+List columns: Username, Full Name, Email, Points Redeemed, Amount Redeemed, View Profile (opens user’s profile), Approve button, and Reject button.
+
+After clicking Approve/Reject, status should update accordingly (approved/rejected).
+
+User Redeem History:
+
+Beside the Redeem button in My Profile, add Redeem History.
+
+Show: Points Redeemed, Amount, Status (default: under review).
+
+After admin approval: status changes to Approved with message:
+
+“Congrats! You are a star. You’ve been posting great sports content and you’ve won a voucher. You'll receive redeemed amount within 7 business days”
+
+After admin rejection: status changes to Rejected with message:
+
+“We’re sorry, but you’re not eligible for redemption now. Keep posting good sports content and stay active on SportsApp.”

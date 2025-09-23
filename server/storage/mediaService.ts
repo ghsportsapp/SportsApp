@@ -6,7 +6,8 @@ import { uploadToGCS, deleteFromGCS, UploadedFile } from './gcs';
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 1024 * 1024 * 1024, // 1GB limit for media files
+    files: 5, // Maximum 5 files per upload
   },
   fileFilter: (req, file, cb) => {
     // Allow images and videos

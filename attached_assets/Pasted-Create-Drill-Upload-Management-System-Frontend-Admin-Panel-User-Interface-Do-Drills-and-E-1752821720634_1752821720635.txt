@@ -1,0 +1,131 @@
+Create Drill Upload & Management System (Frontend + Admin Panel)
+
+🧠 User Interface: Do Drills and Earn Page (Desktop & Mobile)
+
+🔹 Access:
+
+On Desktop: Link from “Upload Drill” button in the navbar.
+
+On Mobile & Desktop: Also accessible from “Do Drills and Earn” card in profile avatar dropdown.
+
+🔹 Page Structure:
+
+Heading:
+
+Do drills and Earn.
+
+Subtext:
+
+Select a sport given below and upload a drill related to that sport to earn extra points.
+
+Sport List Section:
+
+Display famous sports in India (e.g., Cricket, Football, Hockey, Badminton, Kabaddi, athletics, Tennis etc.) as buttons. 2 in a row in mobile and in desktop 5 in a row
+
+On selecting a sport, show 15 drills in a vertical list (one below another) (give number 1-15).
+
+Responsive layout for both desktop and mobile (mobile: full width, stacked layout).
+
+Drill Cards (Repeat for 15 drills per sport):
+
+Heading (e.g., “Drill 1: Straight Drive”)
+
+Description (e.g., “Upload a video playing a proper front-foot straight drive against a slow ball.”)
+
+Status Badge:
+
+Default: Not Submitted
+
+After submit: Under Review
+
+If approved: Accepted
+
+If rejected: Rejected - Try Again
+
+Upload Video Button → Upload MP4/MOV format
+
+After upload: show Change Video option
+
+Submit Drill button (only enabled if video is uploaded)
+
+Logic:
+
+Once user clicks “Submit Drill”, change status to Under Review.
+
+10 Points are added to user only after admin approves the drill.
+
+Once a drill is Accepted, disable upload/change video for that drill.
+
+If Rejected, status changes as rejected an a disclaimer of please try again with a better drill, and user is allowed to re-upload.
+
+🧑‍💼 Admin Panel: Drill Management
+
+🔹 New Section in Admin Panel:
+
+Add a new card titled "Drill Management" next to existing cards.
+
+🔹 Inside Drill Management:
+
+Show 4 tabs:
+
+All, Pending, Accepted, Rejected
+
+Each tab shows list of drills with:
+
+Username
+
+Sport
+
+Drill Number
+
+Submitted Video (clickable preview or modal)
+
+Current Status
+
+Approve button
+
+Reject button
+
+🔹 Filters:
+
+Dropdown filter for Sport (e.g., Cricket, Football, etc.)
+
+Search bar to search user by username (e.g., typing “navi” shows Navi’s all drills).
+
+🔹 Admin Actions:
+
+On clicking Approve:
+
+Drill status updates to Accepted
+
+Add 10 points to that user who uploaded that drill and update points in user profile immediately
+
+Send notification:"Your drill for [Sport] - [Drill Name] has been approved!"(Clicking it redirects to sport’s drill list)
+
+On clicking Reject:
+
+Drill status updates to Rejected - Try Again
+
+User gets another chance to re-upload
+
+Send notification:"Your drill for [Sport] - [Drill Name] was rejected. Please try again with a better drill."
+
+🔔 Notifications (User-Side)
+
+Whenever a drill is approved or rejected:
+
+Add a new notification with:
+
+Title: Your drill video has been approved by admin or Your drill video has been rejected by admin
+
+On click, redirect user to the respective Sport’s Drill List (where all 15 drills are visible)
+
+🔄 Real-time Update Logic
+
+After submitting or admin action:
+
+Status of each drill updates immediately on both user and admin side
+
+Points are updated instantly on the user’s profile
+
+Notifications appear in real-time

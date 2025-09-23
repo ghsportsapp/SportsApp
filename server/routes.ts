@@ -130,7 +130,40 @@ const chunkUpload = multer({
 
 export function registerRoutes(app: Express): Server {
   // Media Upload endpoint
-    app.post('/api/media/upload', mediaUpload.array('files'), async (req, res) => {
+    app.post('/api/media/upload', mediaUpload.array('files'), (error, req, res, next) => {
+      // Handle multer errors
+      if (error) {
+        console.error('Error in POST /api/media/upload:', error);
+        
+        if (error.code === 'LIMIT_FILE_SIZE') {
+          return res.status(413).json({ 
+            error: 'File too large. Maximum file size is 1GB per file.',
+            code: 'FILE_TOO_LARGE'
+          });
+        }
+        
+        if (error.code === 'LIMIT_FILE_COUNT') {
+          return res.status(413).json({ 
+            error: 'Too many files. Maximum 5 files per upload.',
+            code: 'TOO_MANY_FILES'
+          });
+        }
+        
+        if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+          return res.status(400).json({ 
+            error: 'Invalid field name. Use "files" for file uploads.',
+            code: 'INVALID_FIELD'
+          });
+        }
+        
+        return res.status(400).json({ 
+          error: error.message || 'File upload error',
+          code: error.code || 'UPLOAD_ERROR'
+        });
+      }
+      
+      next();
+    }, async (req, res) => {
       try {
         const result = await handleMediaUpload(req);
         if (result.error) {
@@ -302,7 +335,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Create a new post
-  app.post("/api/posts", async (req, res) => {
+  app.post("/api/posts", upload.single("media"), async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -316,10 +349,15 @@ export function registerRoutes(app: Express): Server {
         content: content || null,
       };
 
-      // Handle media URL from GCS
+      // Handle media upload - prioritize GCS mediaUrl, fallback to old file upload
       if (mediaUrl && mediaType) {
+        // New GCS-based upload
         postData.mediaUrl = mediaUrl;
         postData.mediaType = mediaType;
+      } else if (req.file) {
+        // Old local file upload (still supported for backward compatibility)
+        postData.mediaUrl = `/uploads/${req.file.filename}`;
+        postData.mediaType = req.file.mimetype;
       }
 
       // Create the post

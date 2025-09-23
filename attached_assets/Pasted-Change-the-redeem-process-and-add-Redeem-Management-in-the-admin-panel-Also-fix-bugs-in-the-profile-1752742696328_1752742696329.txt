@@ -1,0 +1,101 @@
+Change the redeem process and add Redeem Management in the admin panel. Also fix bugs in the profile page and edit profile section. Apply all the following features exactly:
+
+🔧 1. Edit Profile Improvements
+
+Allow editing of: username, full name, bio, and profile picture.
+
+When user changes their username:
+
+Mark the new username as taken. (user can put only available username)
+
+Make the old username available again.
+
+On profile picture:
+
+Show a + icon.
+
+On click, open gallery to choose an image.
+
+After update, the new image should reflect everywhere (profile, feed, comments, etc.).
+
+🐞 2. Fix Bugs in Profile Page
+
+In a user’s profile → Post section:
+
+Make all buttons and links functional just like the Feed page.
+
+Add working features:
+
+Give Point
+
+Comment
+
+Delete Post
+
+Report Post
+
+Clickable @mentioned usernames (open their profile)
+
+Clickable tagged users (open their profile)
+
+💸 3. Redeem Process Changes
+
+New logic:
+
+If user has less than 5 points, redeem button will be inactive, and after click show a message:
+
+“You need at least 5 points to redeem.”
+
+If user has 5 or more points, the redeem button in the profile is active and clickable. after clicking on it- calculate and show redeemable amount on basis of available points as:
+
+1/5 of total points (e.g., 25 to 29 points = ₹5), 30 to 34 points-₹6. add a redeem button in the bottom.
+
+After clicking Redeem:
+
+Show message:
+
+“Our team will review your activity and profile. If your redeem request is approved, you'll receive the amount in 7 working days. If rejected, your points will not be returned.”
+
+Show a textbox to enter not email and a submit button
+
+after submit, Reset user’s points to 0 immediately.
+
+Add redeem request to admin panel with all details.
+
+🛠️ 4. Admin Panel – Redeem Management
+
+there is already a  Redeem Management section in the Admin Panel, update it after every redeem.
+
+For each redeem request, display:
+
+Username, Full Name, Email, Points redeemed, Amount redeemed3 CTA button for every request- view, approve, reject.
+
+View Profile button (opens user profile)
+
+Approve- which become approved after clicking and not reversible and Reject- which become rejected after clicking and not reversible.On action:
+
+Update the respective user's Redeem History status.
+
+🧾 5. Redeem History (My Profile Page)
+
+Add a Redeem History button beside the Redeem button.
+
+On click, show the user’s past redemptions.
+
+Each record must include:
+
+Points Redeemed
+
+Amount
+
+Status: Under Review (by default), Approved, or Rejected (once admin change the status)
+
+Message shown based on status:
+
+Approved:
+
+“Congrats! You’ve been posting great sports content and received your redeem reward. Our team will contact you within 7 business days.”
+
+Rejected:
+
+“Sorry! Your redeem request was rejected. Make sure your content meets the platform guidelines and you are posting good sports content.”

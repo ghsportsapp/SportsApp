@@ -1,0 +1,21 @@
+{
+  "uploadId": "upload_1758599721886_vo6fgsvg3",
+  "userId": 1,
+  "fileName": "0266554465.jpeg",
+  "fileSize": 193094,
+  "fileType": "image/jpeg",
+  "chunkSize": 8388608,
+  "totalChunks": 1,
+  "receivedChunks": [
+    0
+  ],
+  "postData": {
+    "type": "photo"
+  },
+  "createdAt": "2025-09-23T03:55:21.886Z",
+  "completed": true,
+  "lastUpdated": "2025-09-23T03:55:22.171Z",
+  "completedAt": "2025-09-23T03:55:22.508Z",
+  "finalFilePath": "C:\\Users\\shahe\\OneDrive\\Desktop\\SportsApp\\uploads\\upload_1758599721886_vo6fgsvg3-0266554465.jpeg",
+  "postId": 1
+}

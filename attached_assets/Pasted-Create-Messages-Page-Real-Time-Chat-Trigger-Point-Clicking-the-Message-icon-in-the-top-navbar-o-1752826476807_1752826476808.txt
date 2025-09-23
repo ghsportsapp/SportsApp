@@ -1,0 +1,89 @@
+Create Messages Page (Real-Time Chat)
+
+Trigger Point:
+
+Clicking the Message icon in the top navbar opens the Messages Page.
+
+💻 Desktop Layout
+
+🔹 Left Section (Conversation List)
+
+Title on top: "All Messages"
+
+Below it, a search bar with placeholder: "Search users..."
+
+User can type to search existing users (from real user data).
+
+Show maximum 3 suggestions dynamically.
+
+Matching logic: for example- If user types vi, users like virat, vila, vicky show.If typed vir, only virat remains.
+
+If searched user is already in message list → show at top.
+
+If not → show user under "Other users" as new conversation.
+
+Below search, show list of all old conversations:
+
+Each item shows:
+
+Left: Profile picture.
+
+Right: Username (top), last message (bottom).
+
+3-dot menu on right → Option to Delete conversation (removes from list).
+
+When clicked on any conversation, that chat opens in the right section.
+
+🔹 Right Section (Message Preview / Chat Box)
+
+Initially show: "Your messages will be previewed here."
+
+After selecting a conversation:
+
+Top: Profile Picture, Username, and Usertype (all clickable, redirect to user profile).
+
+Middle: Old messages shown in chronological order.
+
+Bottom:
+
+Message input field with placeholder: "Type your message..."
+
+Send button
+
+Everything should be real-time:
+
+New messages appear instantly on both sides.
+
+Last message in conversation list updates live.
+
+New conversations appear instantly if initiated.
+
+Responsive chat height with scroll support.
+
+📱 Mobile Layout
+
+Full-screen Messages Page opens.
+
+Top Row:
+
+Left: Back Button (←) to return to previous page (All Messages list).
+
+Center/Right: Profile picture, username, usertype (all clickable).
+
+When messages are not opened, show:
+
+Heading: "All Messages" on top.
+
+Below: Search bar (same logic as desktop).
+
+Below that: All conversations.
+
+After tapping on a conversation:
+
+Open chat in full page.
+
+Show entire message thread.
+
+Message input at bottom with send button.
+
+Should behave like Instagram DM or WhatsApp mobile chat.

@@ -1,0 +1,99 @@
+Build a **User Profile Page** in “SportsApp” with all the following functionalities and logic.
+
+---
+
+### ✅ GENERAL STRUCTURE:
+
+#### 🔹 Profile Page (for All Users)
+
+* Shows:
+
+  * Profile Picture (circular)
+  * Full Name
+  * Username (with **blue tick** if verified)
+  * User Type (Athlete / Sports Fan)
+  * Bio (or “No bio added”)
+  * Total Posts Count
+* Below that: Display all posts of that user, in feed layout (text/photo/video).
+
+#### 🔹 For Own Profile Only (Extra Sections):
+
+1. **Edit Profile** Button
+2. **Verify Yourself** Button (or status-based button: Under Review / Redeem Voucher / Rejected)
+3. **Available Points** Section:
+
+   * Sum of likes received on all posts
+   * Example: 3 posts with 5, 8, and 12 likes → “Available Points: 25”
+     user can see only its own point.
+
+---
+
+### 🔒 VERIFICATION SYSTEM:
+
+#### ✳️ Flow:
+
+* Show **“Verify Yourself”** button (if not verified).
+* Button opens popup with:
+
+  > “Make sure your profile contains only sports-related content, enough number of posts, and has recent activity within the past week. Our team will review your profile.”
+* Below that, `Request Verification` button.
+* Once requested:
+
+  * Button changes to → `Verification Under Review`
+  * Below it, show: “(You need to be verified to redeem your points.)”
+* If **Rejected**, show → `Rejected, Try Again`
+* If **Verified**, show → `Redeem Voucher`
+
+---
+
+### 💰 REDEEM VOUCHER SYSTEM:
+
+#### 🔹 Only visible to **verified users** on their own profile:
+
+* After clicking **Redeem Voucher**:
+
+  * Redirect user to a new page: **“Redeem Points”**
+  * Page shows:
+
+    * “Available Points: X”
+    * “You need 1000 points to redeem ₹100”
+
+      * If user has **1000 or more points** → Enable `Redeem ₹100` button
+      * If user has **less than 1000 points** → Show message:
+
+        > “You need X more points to redeem.”
+* Points are **not deducted** unless user redeems.
+
+---
+
+### 👑 ADMIN PANEL – VERIFICATION MANAGEMENT
+
+Add a card in Admin Panel: **Verification Management**
+
+* Inside:
+
+  * List of users who requested verification:
+
+    * Username, Full Name, Email
+    * 3 Buttons: `View Profile`- which will open the profile page of that user, `Verify`, `Reject`
+  * `Verify`: Adds blue tick to username everywhere + shows "Redeem Voucher" on user profile
+  * `Reject`: Shows "Rejected, Try Again" on user’s profile
+
+---
+
+### 🎯 OTHER NOTES:
+
+* Blue tick must appear:
+
+  * On Profile Page
+  * Feed Page (beside username)
+  * Admin View
+
+* Verification/Rejection status must update real-time.
+
+---
+
+### 📱 RESPONSIVE DESIGN
+
+* Full support for **mobile and desktop**
+* Profile layout, popups, and redeem page must be responsive and near

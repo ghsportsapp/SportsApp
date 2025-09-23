@@ -1,0 +1,91 @@
+Add Admin Verification Management in admin panel and make Clickable Profile Redirection in Feed
+
+✅ PART 1: Add "Verification Management" to Admin Panel
+
+🔸 Verification Management Card:
+
+Add a new card in the Admin Panel homepage titled “Verification Management”
+
+On clicking, redirect to a new page: /admin/verification-management
+
+📋 Inside Verification Management Page:
+
+🔹 Show a List/Table of All Verification Requests
+
+Each row should include:
+
+Profile Picture
+
+Full Name
+
+Username
+
+Email
+
+Status (Pending / Verified / Rejected)
+
+3 CTA Buttons:
+
+View Profile → Opens the user's profile page
+
+Verify → Changes status to "Verified"
+
+This adds a blue tick badge to the user’s name everywhere (feed, profile, etc.)
+
+In the user's profile: "Request Verification" changes to "Redeem Voucher"
+
+Reject → Changes status to "Rejected"
+
+In the user's profile: "Verification Under Process" becomes "Request Rejected, Try Again"
+
+🔹 Real-time Updates:
+
+When any user requests verification, the entry should appear in this list immediately (no page refresh needed).
+
+Actions (verify/reject) must reflect instantly on both admin and user side.
+
+✅ PART 2: Make Profile Navigation Interactive in Feed Page
+
+🧩 Add Clickable Redirects in Feed Page for:
+
+Profile Avatar
+
+When clicked → Redirect to the respective user's profile page.
+
+Full Name and Username in Post Header
+
+Both should link to that user's profile page.
+
+@Mentioned Users in Caption
+
+The "@username" in caption must be a clickable link → Redirects to mentioned user's profile.
+
+Tagged Users in Media
+
+Clicking the Tag Icon on media should open a popup listing tagged users.
+
+Each listed user should have clickable name → opens their profile.
+
+✨ Additional Details:
+
+All redirected profile pages should use the correct data from the database (no mix-up of usernames).
+
+Profile page layout should remain the same as defined in Prompt 3.
+
+Blue tick must be shown for verified users beside the username on:
+
+Feed Posts
+
+Profile Page
+
+Mentions & Tags
+
+✅ Security & Flow Recap:
+
+Only the admin user (with secure login) can access Verification Management.
+
+Admin Panel is stored in a separate database from user data to ensure security.
+
+Actions like "verify" or "reject" update only that user's record.
+
+All updates should sync in real time across frontend and admin view.

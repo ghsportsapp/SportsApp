@@ -1,0 +1,340 @@
+The live site is slow. Your job is to audit, refactor, and optimize all pages and assets in this Replit project to meet strict performance, stability, accessibility, and SEO targets without changing core UX/branding.
+
+Top-Level Goals (Acceptance Targets)
+
+Core Web Vitals (mobile & desktop, Lighthouse):
+
+Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95
+
+Largest Contentful Paint (LCP) ≤ 2.5s, First Input Delay/INP ≤ 200ms, CLS ≤ 0.1
+
+Bundle size: Reduce total JS/CSS transferred by ≥40% vs current.
+
+Image weight: Reduce total image bytes by ≥50% vs current.
+
+Errors: Zero console errors; no 404s or broken links.
+
+A11y: WCAG 2.1 AA compliance on all public pages.
+
+Step 0 — Discover the Site & Tech
+
+Inventory all pages and routes by scanning the codebase and, if present, sitemap.xml/robots.txt. If no sitemap, crawl from / to discover linked pages.
+
+Detect the stack (static HTML/CSS/JS, or a framework like React/Next, Vue/Nuxt, SvelteKit, Express, EJS, etc.). Identify build tools (Vite/Webpack/Parcel), package versions, and hosting specifics that matter on Replit.
+
+Output a PLAN before changing code:
+
+List of pages/routes/components.
+
+Current build pipeline.
+
+Biggest performance offenders (heavy images, render-blocking CSS/JS, unnecessary libs, unoptimized fonts, slow API calls, huge DOM, etc.).
+
+A page-by-page fix checklist.
+
+Important: Do not proceed with code edits until you’ve printed the PLAN.
+
+Step 1 — Global Performance & Build Optimizations
+
+Code splitting & tree-shaking:
+
+Remove unused libraries/dependencies.
+
+Split vendor and route-level bundles; dynamic-import non-critical modules.
+
+Minification & compression:
+
+Ensure HTML, CSS, JS minification.
+
+Enable Brotli (preferred) or gzip for all text assets.
+
+HTTP/headers (where supported):
+
+Far-future cache for hashed static assets; short/no-cache for HTML.
+
+Add Cache-Control, ETag, and Last-Modified.
+
+Preload/Prefetch wisely:
+
+rel="preload" for the hero font(s), the hero image, and critical CSS chunk.
+
+rel="prefetch" for likely next-page route bundles.
+
+Fonts:
+
+Use font-display: swap, subset to used glyphs, prefer WOFF2.
+
+Remove redundant font weights/styles; limit to essential variants.
+
+Images:
+
+Convert to WebP/AVIF with responsive srcset/sizes; lazy-load below-the-fold images; strip EXIF.
+
+Use CSS aspect-ratio or width/height attributes to prevent CLS.
+
+Replace carousels/auto-play videos with lighter alternatives or defer their init.
+
+CSS:
+
+Purge unused CSS; consider CSS modules or utility-first approach.
+
+Inline critical CSS for above-the-fold; defer the rest.
+
+JS runtime:
+
+Remove jQuery or legacy polyfills if not strictly needed.
+
+Avoid heavy date/utility libs; replace with light alternatives or native APIs.
+
+Debounce/throttle scroll/resize listeners; avoid layout trashing (getBoundingClientRect() loops).
+
+Service Worker (if applicable):
+
+Cache static assets offline; follow a cache-busting strategy on deploy.
+
+Step 2 — Page-by-Page Refactor (Repeat for every page/route)
+
+For each page/route:
+
+Identify the “hero” elements (largest text/image/video). Ensure they load first with minimal blocking.
+
+Defer non-critical JS, lazy-load heavy components below the fold.
+
+Trim the DOM size and nesting; remove hidden/off-screen bloat.
+
+Replace blocking CSS/JS with async/deferred loads; split CSS by route if the framework allows.
+
+Optimize images used on this page (responsive, AVIF/WebP, correct dimensions).
+
+Stabilize layout (width/height, aspect-ratio, font fallback).
+
+Audit third-party scripts (analytics, widgets); remove or load after load with async; sandbox iframes.
+
+Measure via Lighthouse (mobile + desktop) and note improvements.
+
+Step 3 — API/Data & State (If a SPA or dynamic pages)
+
+Network:
+
+Batch requests; enable HTTP caching; add ETags.
+
+Client-side caching (SWR/React Query) with sane TTLs; avoid refetch storms.
+
+Rendering:
+
+Prefer SSR/SSG for static content; hydrate only where interactive.
+
+Virtualize long lists; memoize heavy components; use useMemo/useCallback strategically.
+
+Error handling & retries: Exponential backoff, abort stale requests, show skeleton UIs.
+
+Step 4 — Accessibility & SEO
+
+A11y: Semantic HTML, landmarks (header/nav/main/footer), ARIA only when needed, focus styles, keyboard nav, alt text, form labels, color contrast ≥ 4.5:1.
+
+SEO: Descriptive titles/meta, canonical tags, structured data where applicable, clean URLs, sitemap & robots, OpenGraph/Twitter cards, no duplicate content.
+
+Step 5 — Security & Best Practices
+
+Enforce Content-Security-Policy (script/style/img/frame-src), X-Content-Type-Options: nosniff, Referrer-Policy, X-Frame-Options/frame-ancestors.
+
+Sanitize any user content; avoid innerHTML.
+
+Remove dead endpoints/keys; do not ship secrets to the client.
+
+Step 6 — Tooling, Testing, and CI (in Replit)
+
+Lint & format: ESLint + Prettier with strict rules; fix all warnings.
+
+Type safety: If using TS, tighten tsconfig; if JS, add JSDoc types to critical modules.
+
+Automated checks:
+
+Add a Lighthouse CI script (mobile + desktop).
+
+Add an image-optimization check (block PR if non-optimized images added).
+
+Add a basic Playwright test for core flows and aXe for a11y.
+
+Build artifacts: hashed filenames; clean old assets on deploy.
+
+Step 7 — Deliverables (Must Provide All)
+
+PLAN (initial) — inventory, stack, bottlenecks, and per-page checklist.
+
+CHANGELOG — human-readable summary of all changes.
+
+METRICS REPORT — before/after table: Lighthouse scores, LCP/CLS/INP, total bytes by type (HTML/CSS/JS/images/fonts), request counts.
+
+PER-PAGE NOTES — what was removed, what was deferred, what was compressed.
+
+HOW TO MAINTAIN — a short doc with do/don’t guidelines (images, scripts, CSS).
+
+OPEN ISSUES — any limits due to Replit/hosting with suggested workarounds.
+
+Non-Negotiables
+
+Do not change the visual design or UX flows except to improve speed or a11y.
+
+Keep all existing routes working and backward compatible.
+
+No inline secrets. No regressions (functional, visual, or SEO).
+
+If something cannot be done due to Replit limitations, document the constraint and provide the next-best alternative.
+
+What to Output First
+
+Print the PLAN (inventory + bottlenecks + per-page checklist).
+
+Wait for my “OK” in this chat.
+
+Then apply changes incrementally, page-by-page, printing diffs or file paths changed each step, followed by updated Lighthouse metrics.
+
+Useful Commands/Tasks (assistant should create/run equivalents)
+
+Generate before/after Lighthouse reports (mobile & desktop) and store snapshots in /perf/ with timestamps.
+
+Create an image optimization script to convert to AVIF/WebP and update <img>/<source> tags automatically.
+
+Add a build-time critical CSS extraction step (e.g., Critters/LightningCSS or framework-native).
+
+Add a bundle analyzer report and remove heavy modules.
+
+Add aXe a11y checks to CI and fix violations.
+
+Context to remember: This site currently feels slow to load and interact. The objective is to make it feel instant on a typical 4G mobile device while keeping the look/brand intact.
+
+If you need anything else (e.g., priorities or pages to skip), ask me before proceeding. Otherwise, start by printing the PLAN.
+
+You said:
+i don't want any change in functionality and replit is a website builder tool.
+give prompt according to that
+ChatGPT said:
+Thought for 11s
+
+Got it. Here’s a tightened “super prompt” tailored for a website builder workflow, with strict no-functionality-change rules. Just paste this into Replit’s AI Website Builder.
+
+SUPER PROMPT — Optimize sportsapp.in Without Changing Functionality
+
+Context: This project powers sportsapp.in. The site feels slow. Your job is to optimize performance, code quality, and accessibility across every page while keeping everything working and looking the same for users.
+
+Non-Negotiable Guardrails (Do Not Break These)
+
+No functionality changes. All features, flows, forms, buttons, menus, sliders, modals, analytics, and 3rd-party integrations must behave exactly as before.
+
+No content or layout changes. Keep wording, images, structure, spacing, and visual design pixel-identical (allowing only imperceptible shifts from technical fixes like setting width/height to eliminate CLS).
+
+Preserve routes/URLs, IDs, classes, data-attributes, and public APIs/events, so any scripts or external tools continue to work.
+
+If an optimization risks changing behavior or visuals, skip it and report it in the notes instead of applying it.
+
+Targets (Acceptance Criteria)
+
+Lighthouse (mobile & desktop): Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95.
+
+LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1 on primary pages.
+
+Reduce total transferred JS/CSS by ≥ 40% and images by ≥ 50% (without altering perceived quality).
+
+Zero console errors and no broken links.
+
+What to Do (Builder-Friendly)
+
+Inventory & Plan (print first):
+
+List all pages/routes found from the code and any sitemap/links.
+
+Note major bottlenecks (heavy images, render-blocking assets, unused CSS/JS, non-subset fonts, blocking 3rd-party scripts).
+
+Produce a page-by-page checklist.
+Stop after printing the PLAN; then proceed.
+
+Image Optimization (no visual change):
+
+Convert raster images to WebP/AVIF; keep original formats as fallback.
+
+Add responsive srcset/sizes, exact width/height (or aspect-ratio) to prevent CLS.
+
+Add loading="lazy" to below-the-fold images only; keep above-the-fold images eager.
+
+Do not change which image is shown—only the encoding/size/markup for performance.
+
+CSS Improvements (behavior-neutral):
+
+Remove unused CSS safely (purge based on actual DOM usage; whitelist any dynamic classes).
+
+Inline critical CSS for above-the-fold; defer the rest with media="print" + onload switch or equivalent safe pattern.
+
+Minify CSS. Keep class names/IDs intact.
+
+JavaScript Delivery (no logic edits):
+
+Defer or async non-critical scripts; keep execution order for anything that depends on it.
+
+Split bundles by route if supported; tree-shake unused exports.
+
+Remove polyfills or libraries that are truly unused; do not remove ones referenced at runtime.
+
+Throttle/debounce expensive passive listeners (scroll/resize) without altering thresholds or behavior.
+
+Fonts (no typography changes):
+
+Subset fonts to used glyphs; serve WOFF2 first; set font-display: swap.
+
+Preload only the exact hero font files actually used above the fold.
+
+Keep the same families, weights, and fallbacks.
+
+HTML & Networking:
+
+Ensure HTML is minified and valid; add rel="preload" for the hero image, critical CSS, and key fonts only.
+
+Add rel="prefetch" for likely next-page resources.
+
+Add Cache-Control headers for static assets (hashed) and conservative caching for HTML (if host supports headers).
+
+Keep meta tags, structured data, and OG tags intact (or add if missing without altering page content).
+
+Third-Party Scripts:
+
+Load analytics/trackers async and after main content where safe; keep all endpoints and configuration unchanged.
+
+If any script blocks rendering and cannot be deferred without functional risk, leave as-is and note it.
+
+Accessibility (no visual change):
+
+Ensure semantic landmarks, alt text, form labels, keyboard focus order, and contrast meet WCAG 2.1 AA.
+
+Add missing aria-* attributes only when necessary and only if they don’t change behavior.
+
+Verification Steps (do this after each page)
+
+Run mobile + desktop Lighthouse; record scores and LCP/INP/CLS.
+
+Confirm no functional regressions: forms submit, nav works, modals open/close, sliders/tabs toggle, analytics still fires.
+
+Visually diff before/after; there should be no perceptible change.
+
+Deliverables (print these at the end)
+
+PLAN (inventory + bottlenecks + per-page checklist).
+
+CHANGELOG (what files changed and why; no behavior changes).
+
+METRICS REPORT (before/after: Lighthouse scores, LCP/INP/CLS, bytes by type, request counts).
+
+PER-PAGE NOTES (images optimized, scripts deferred, CSS purged, any items skipped with reasons).
+
+MAINTENANCE GUIDE (how to add optimized images, when to defer scripts, how to keep CLS low).
+
+Safety Switches
+
+Preserve all IDs, classes, data-attributes, event handlers, routes, query params, and public JS APIs.
+
+If a proposed edit might change behavior or visuals, do not apply it—add it to “Skipped Items” with a note.
+
+Do not rotate, crop, or replace images; only re-encode/resize.
+
+Do not change copy, headings, or DOM order that affects screen readers or SEO.
+
+Start by printing the PLAN. Then wait for my “OK” to proceed with the changes.

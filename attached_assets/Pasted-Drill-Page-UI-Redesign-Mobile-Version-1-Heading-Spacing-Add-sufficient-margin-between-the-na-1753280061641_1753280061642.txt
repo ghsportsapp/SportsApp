@@ -1,0 +1,91 @@
+Drill Page UI Redesign
+
+📱 Mobile Version
+
+1. Heading Spacing:
+
+Add sufficient margin between the navbar and the “Do Drills and Earn” heading so it doesn’t look cramped.
+
+2. Section Title:
+
+“Select a Sport” text should be center-aligned.
+
+3. Sport Cards Grid:
+
+Arrange sport cards in a 2-column grid:
+
+Total 7 sports = 4 rows (last row with 1 item centered).
+
+All sport cards should be:
+
+Square-shaped, same size.
+
+Have vibrant and visually appealing background colors.
+
+Card content layout:
+
+At the top: Animated 3D sport icon
+
+Below icon: Sport name in semi bold, white or dark (readable) text (same for all cards).
+
+Ensure enough margin between cards.
+
+Example icons & animations:
+
+🏏 Cricket: Bat & ball — ball hits bat repeatedly
+
+⚽ Football: Realistic football spinning on axis
+
+🎾 Tennis: Racket & ball — ball bounces
+
+🏸 Badminton: Racket & shuttle — shuttle moves
+
+🏑 Hockey: Stick & ball. ball hitting the stick again and again
+
+🤼‍♂️ Kabaddi: Kabaddi icon movement (light pulse animation)
+
+🏃 Athletics: Running shoes or track lane — slight bounce effect
+
+Icons animate continuously, not too fast, consistent timing
+
+Only icon should animate, background color and text are static
+
+Icons must not overflow card bounds, must look clean & sporty
+
+4. Submit Button:
+
+Full width, slightly reduced height
+
+Use same gradient styling as the Create Post button from Feed Page
+
+Button must be visually standout, but sporty
+
+💻 Desktop Version
+
+1. Layout:
+
+Use a 2-row layout:
+
+First row: 4 cards
+
+Second row: 3 cards
+
+Cards should be larger than mobile version but maintain square shape
+
+Follow the same animated icons and design rules as mobile version
+
+2. Width Consistency:
+
+All content (heading, description, sport cards, submit button) should align with the same width as feed page — keep design uniform across site
+
+3. Submit Button:
+
+No change in size just change the colour with Create post button colour in desktop.
+
+🚫 Do Not Touch
+
+Functionality of page (no logic changes)
+
+Any Other page
+
+Animations should be vector-based or lightweight 3D, no heavy scripts

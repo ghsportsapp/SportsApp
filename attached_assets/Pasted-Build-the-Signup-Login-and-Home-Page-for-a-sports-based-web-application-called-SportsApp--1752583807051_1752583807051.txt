@@ -1,0 +1,123 @@
+Build the **Signup, Login, and Home Page** for a sports-based web application called **“SportsApp”**. The website should be **fully responsive** for both desktop and mobile views.
+
+---
+
+### ✅ Signup Page
+
+* Build a **responsive signup page** that works on both desktop and mobile.
+
+* The signup form should ask for the following fields in **this exact order**:
+
+  1. Full Name
+  2. Username
+  3. User Type (select one: **Sports Fan** or **Athlete**)
+  4. Email
+  5. Phone Number (must be 10 digits and unique)
+  6. Password
+  7. Confirm Password
+
+* **Real-Time Validation**:
+
+  * When a username is already taken, show:
+
+    * ❌ “Username already taken”
+    * ✅ Suggest two alternative available usernames, like: `navii`, `navi01`
+  * If email is already registered, show:
+
+    * ❌ “Email already registered” (without submitting the form)
+  * Phone number:
+
+    * Must be exactly 10 digits
+    * Must be unique (one phone per account)
+
+---
+
+### ✅ Login Page
+
+* User logs in with **Username** and **Password**
+* Include:
+
+  * ✅ “Remember Me” checkbox
+  * ✅ “Forgot Password?” button (clickable, non-functional for now)
+* On successful login, redirect the user to the **Home Page**
+
+---
+
+### ✅ Home Page (after login)
+
+* Home Page will have **no main content** for now
+* Add a **static responsive navbar** at the top
+
+---
+
+#### ✅ Desktop Navbar
+
+* **Left**: SportsApp logo
+* **Center (4 menu options)**:
+
+  * **Home** (highlighted by default)
+  * Feed
+  * Sports News
+  * Upload Drills
+* **Right side**:
+
+  * Search icon
+  * Notifications icon
+  * Messages icon
+  * Profile Avatar (far right)
+
+---
+
+#### ✅ Mobile Navbar
+
+* **Top row layout**:
+
+  * **Left**: Logo
+  * **Right**: 3 icons (Search, Notification, Message) and a Profile Avatar
+
+* Profile Avatar (when clicked) opens a **clean dropdown** with:
+
+  * Home
+  * Feed
+  * Sports News
+  * Do Drills and Earn
+  * My Profile
+  * Admin Panel
+  * Logout
+    *(Make the same dropdown options functional on desktop too)*
+
+* For now, only the following options should work:
+
+  * Home
+  * Admin Panel
+  * Logout
+
+---
+
+### ✅ Admin Panel (User Management)
+
+* Clicking **Admin Panel** from avatar dropdown redirects to the **Admin Dashboard**
+* Show a card titled **User Management**
+* Clicking that redirects to the **User Management Page**
+
+---
+
+#### ✅ User Management Page
+
+* Display a table of **all registered users**
+* Table should update in **real time** after every signup
+* Show newest users at the top
+* Table Columns:
+
+  * Full Name
+  * Username
+  * Email
+* **Two Action Buttons per user**:
+
+  * **View** → Opens a popup with detailed info (Full Name, Username, Email, Phone, Usertype, Date Joined)
+  * **Delete** → Deletes user permanently from the database
+
+    * Frees up their username, email, and phone number for reuse
+    * Removes login access
+
+---

@@ -1,0 +1,84 @@
+Add a floating "Ask AI" button on the bottom right of your website.
+When clicked:
+
+A chat window opens.
+
+Users can ask sports-related or SportsApp-related questions.
+
+If question is unrelated, AI replies: "Please ask a question related to sports or SportsApp."
+
+✅ Step-by-Step Guide (Replit Full Stack)
+1. 🟢 Frontend – Add Floating Button + Chat Box
+✅ Create or update your main HTML file (e.g., index.html) and add:
+
+A floating "Ask AI" button
+
+A hidden chat box that opens on click
+
+JS to send message to backend
+
+You can use this Replit file structure:
+
+pgsql
+Copy
+Edit
+📁 SportsApp/
+├── index.html
+├── style.css
+├── script.js
+├── server.js
+├── .env
+├── package.json
+2. 🟢 Backend – ChatGPT API Integration
+✅ Use Express.js in server.js to create a route /ask which:
+
+Takes user message
+
+Sends it to OpenAI API with the special system prompt
+
+Sends back the reply
+
+✅ System Prompt you’ll use in the backend:
+
+txt
+Copy
+Edit
+You are an AI assistant for a website called SportsApp. Only answer questions that are related to sports (such as rules, players, matches, techniques, or training) or questions related to the features and usage of the SportsApp platform. If the user asks anything unrelated, politely reply: "Please ask a question related to sports or SportsApp." Be helpful, friendly, and concise.
+3. 🟢 Replit Setup
+✅ In Replit:
+
+Create a new Replit (Node.js) project if not already.
+
+Add express, openai, and dotenv to your package.json:
+
+bash
+Copy
+Edit
+npm install express openai dotenv cors
+Create a .env file with your OpenAI key:
+
+ini
+Copy
+Edit
+OPENAI_API_KEY=sk-xxxxx
+✅ In server.js, set up the /ask POST endpoint that uses the system prompt and replies.
+
+4. 🟢 Connect Frontend ↔ Backend
+✅ In script.js, add a function that:
+
+Captures user question
+
+Sends it to POST /ask route
+
+Appends AI’s reply in the chat box
+
+✅ Make sure to test locally on Replit by clicking the floating button and typing a message.
+
+✅ Final Notes
+Deploy your Replit project (click "Run")
+
+Your frontend will now show the floating Ask AI button
+
+Only sports or SportsApp-related questions will be answered
+
+Everything else will get: "Please ask a question related to sports or SportsApp."

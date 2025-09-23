@@ -1,0 +1,49 @@
+Drill Upload Fix and Admin Access Bug
+
+Bug 1: Upload Failed on Drill Page (User Side)
+
+When a user tries to upload a video for any drill, the upload fails and shows an error (e.g., "upload failed")(as shown in attached image).
+
+✅ Fix required: Ensure the video file upload logic is working correctly — store it properly (e.g., in database or storage folder), allow common formats like .mp4, ect and confirm file size handling.
+
+✅ After selecting and uploading a video, a “Change Video” option should appear and the “Submit Drill” button should activate.
+
+✅ After clicking "Submit Drill", update drill status to Under Review and reflect it instantly.
+
+Bug 2: Admin Cannot Access Drill Management Panel (Admin Side)
+
+Even after successful admin login, visiting “Drill Management” in the admin panel shows a "You don't have access to this page" error.
+
+✅ Fix required: Properly authenticate admin session and role so that logged-in admin can access all sections of admin panel including “Drill Management”.
+
+Functionality Reminder:
+
+Admin should be able to:
+
+See all uploaded drills categorized under: All, Pending, Accepted, Rejected. and can view al the drills uploaded. for that give a view button in every drill, which open a popup of dril heading, description and the video which will autoplay.
+
+Filter by sport (Cricket, Football, etc.).
+
+Search users by name and view all drills submitted by them.
+
+Accept or reject each drill.
+
+On acceptance: Update status to Accepted, add 10 points to user's profile (real-time).
+
+On rejection: Status becomes Rejected, allow re-upload with message: “Please try again with better drill.”
+
+Once a drill is accepted, uploading again for that drill should be disabled.
+
+Notifications Fix:
+
+When a drill is accepted or rejected, user should get real-time notification.
+
+Clicking the notification should take user directly to the corresponding sport’s drill section.
+
+Design & Layout:
+
+✅ Keep layout mobile and desktop responsive.
+
+✅ List view (1 drill per row).
+
+✅ Use same style as used in other list views (e.g., redeem history or search).

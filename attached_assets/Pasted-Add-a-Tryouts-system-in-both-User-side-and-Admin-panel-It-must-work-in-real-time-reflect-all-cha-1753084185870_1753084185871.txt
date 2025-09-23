@@ -1,0 +1,147 @@
+Add a "Tryouts" system in both User side and Admin panel. It must work in real-time, reflect all changes instantly, and be fully responsive.
+
+🔹 User Side – Tryouts Page:
+
+Add a button called "Tryouts" in the profile avatar in both mobile and desktop. which will have 2 sections- "Apply for tryouts" and "My applications"
+
+Show these 2 tryouts initially:
+
+1. Padukone Academy – Badminton Tryouts
+
+Location: Bengaluru, KarnatakaDate: 10th August 2025Eligibility: Age group 14–21 (both boys & girls)Timings: 9:00 AM – 1:00 PMVenue: Paducon Indoor Sports ArenaHighlights:
+
+Skill & agility tests
+
+Live match performance
+
+Chance to get selected for national-level training
+
+Description: Elite badminton trials for youth interested in training under certified coaches from the Padukone Academy.
+
+2. Striker’s United – Football Tryouts
+
+Location: Pune, MaharashtraDate: 17th August 2025Eligibility: U-18 BoysTimings: 8:30 AM – 12:00 PMVenue: Shivaji Sports Ground, PuneHighlights:
+
+Speed, stamina & footwork evaluation
+
+Shortlisted players will be invited for a full-time residential program
+
+Scouts from 2 I-League clubs attending
+
+Description: Open trials for U18 and U21 footballers. Chance to get selected in the local football club team.
+
+Each tryout card should show:
+
+Tryout NameDescription
+
+LocationDateEligibilityTimingvenueHighlights
+
+Button: “Apply”
+
+Clicking Apply opens a form:
+
+Full Name (input)
+
+Contact Number (input) 
+
+Email Address (input) (must be in right format)
+
+Upload Tryout Video (video file input)
+
+Submit Button (when all details are filled)
+
+After submission:
+
+Show status of the application as:
+
+Under Review / Approved / Rejected
+
+Move the application under a new section called “My Applications”
+
+In My Applications tab:
+
+Show all tryouts the user has applied for with:
+
+Tryout Name, Date, Status
+
+If Approved, show Congratulations message
+
+If Rejected, show Re-Upload better Video or try for another tryout option, user can reupload a video here and that will be a different application. (open that popup form again)
+
+🔹 Admin Panel – Tryouts Management:
+
+Add a new sidebar item in Admin Panel: “Tryouts Management” with 2 parts:
+
+✅ 1. Applications View
+
+List of all user tryout applications:
+
+Columns: User Name, Email, Contact, Tryout Name, Video Submission (clickable), Status
+
+Actions:
+
+Approve button
+
+Reject button
+
+Add tabs to filter applications:
+
+All, Pending, Approved, Rejected
+
+Any status change should reflect instantly on user side
+
+✅ 2. Manage Tryouts Section
+
+Add a button: Manage Tryouts in Tryouts Management
+
+This opens a new page showing:
+
+🔘 Top: Add New Tryout button
+
+📋 Below: List of existing tryouts (e.g., Padukone Academy, Striker’s United)
+
+For each tryout in the list:
+
+Show: Name, Location, Description
+
+Button: Delete Tryout
+
+On click, it deletes the tryout from both:
+
+Admin panel list
+
+User side apply section
+
+Add New Tryout:
+
+Clicking Add New Tryout opens a popup/modal
+
+Form fields (all mandatory):
+
+Tryout NameDescription
+
+LocationDateEligibilityTimingvenueHighlights
+
+Button: “Add tryout”
+
+Button: Add Tryout
+
+On click:
+
+Add tryout to admin's tryout list
+
+Also make it visible in user's Tryouts section
+
+Should reflect instantly (real-time)
+
+📱 Responsive Design:
+
+On desktop:
+
+Tryouts shown in 2-3 column grid
+
+On mobile:
+
+Tryouts and application lists shown in single-column list
+
+Ensure the responsiveness and make sure content will not go outside the scree, ensure padding and margin between content.

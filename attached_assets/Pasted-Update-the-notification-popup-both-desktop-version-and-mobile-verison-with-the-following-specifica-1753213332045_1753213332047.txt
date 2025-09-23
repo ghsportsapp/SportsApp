@@ -1,0 +1,61 @@
+Update the notification popup (both desktop version and mobile verison) with the following specifications:
+
+✅ UI/UX Layout:
+
+In desktop, Replace the current center popup notification (shown in Image 1) with a side drawer panel just like the search panel shown in Image 2.
+
+It should:
+
+Slide in from the right
+
+Be of 1/3 width of the viewport
+
+Occupy full height
+
+Be scrollable if content overflows
+
+Match the UI style of the search panel, but dedicated to notifications"For mobile popup will be of full page, just like search panel
+
+✅ Real-Time Notification System:
+
+Notifications should be updated in real-time (no page refresh) using WebSockets (like Socket.IO or Firebase).
+
+Trigger notifications for the following events:
+
+Post got a new point
+
+Someone commented on a post
+
+Verification request approved or rejected
+
+Drill video approved (user earns points) or rejected
+
+Tryout request approved or rejected
+
+Show number of pending notification on the notification icon, and remove the number when user opens notification popup. after opening pop up and cutting , and new notification will again, then only that notification will count as unseen. example- If 2 notifications are unseen, show badge "2" on the notification icon in the navbar
+
+✅ Seen/Unseen Management:
+
+When user clicks on the notification icon:
+
+Open the notification drawer
+
+Mark all notifications as seen immediately
+
+Remove the badge count from the icon
+
+Visually differentiate:
+
+Unseen notifications should have a different background color or highlight
+
+Seen notifications should appear normal (faded or white background)
+
+✅ Functional Requirements:
+
+Each notification should include:
+
+A small icon (like ✅ for approval, ❌ for rejection, 💬 for comment, etc.), in case of point and comment, username who gave points or comments should also mentioned. eg- username gave you points on your post, and in left profile picture of that user should be there, and in right that post should be there and clicking on that notification will redirect to that post (these feature already exist, keep it liek that only)
+
+A short message (e.g., “Your video was approved. You earned 10 points.”)
+
+A timestamp (e.g., “2 minutes ago”)

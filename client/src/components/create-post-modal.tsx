@@ -166,23 +166,65 @@ export function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
       return;
     }
 
-    // For media posts, use the progressive upload system
+    // For media posts, upload to GCS first, then create post
     try {
-      // Close modal immediately and start upload
+      // Close modal and show loading state
       handleClose();
       
-      await startPostUpload({
-        type: postType,
-        content: content || undefined,
-        mentions: mentions.length > 0 ? JSON.stringify(mentions.map(m => m.id)) : undefined,
-        tags: tags.length > 0 ? JSON.stringify(tags.map(t => t.id)) : undefined,
-        file: mediaFile,
+      // Step 1: Upload media to Google Cloud Storage
+      const formData = new FormData();
+      formData.append('files', mediaFile);
+      
+      toast({
+        title: t('posts.uploadStarted'),
+        description: t('posts.uploadingMedia'),
       });
+      
+      const uploadResponse = await fetch("/api/media/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload media');
+      }
+
+      const { files } = await uploadResponse.json();
+      const uploadedFile = files[0];
+      
+      // Step 2: Create post with GCS media URL
+      const postResponse = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: postType,
+          content: content || undefined,
+          mediaUrl: uploadedFile.url,
+          mediaType: uploadedFile.filename.includes('.') ? 
+            mediaFile.type : mediaFile.type, // Use original file type
+          mentions: mentions.length > 0 ? JSON.stringify(mentions.map(m => m.id)) : undefined,
+          tags: tags.length > 0 ? JSON.stringify(tags.map(t => t.id)) : undefined,
+        }),
+      });
+
+      if (!postResponse.ok) {
+        throw new Error('Failed to create post');
+      }
+
+      // Invalidate queries to refresh feed
+      queryClient.invalidateQueries({ queryKey: ["/api/posts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/posts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/posts/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users/profile"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
 
       // Show success message
       toast({
-        title: t('posts.uploadStarted'),
-        description: t('posts.uploadStartedDescription'),
+        title: t('posts.createPost'),
+        description: t('posts.postCreated'),
       });
       
     } catch (error: any) {

@@ -1,0 +1,239 @@
+Build a fully functional Feed Page for the SportsApp with:
+
+Real-time post creation (text/photo/video)
+
+Mentions, tags, comments, and 1-point gifting system
+
+Filters for post type
+
+Responsive UI (Desktop + Mobile)
+
+Post Management panel for admin with live moderation
+
+🔷 1. Feed Page (User Side)
+
+🔹 Navbar (already built earlier, keep the same):
+
+Desktop: Logo (left), Nav links (Home, Feed, Sports News, Upload Drills), 3 icons (Search, Notification, Message), Profile Avatar (right)
+
+Mobile: Logo (left), 3 icons + Avatar (right)
+
+Profile dropdown includes: Home, Feed, Sports News, Do Drills and Earn, My Profile, Admin Panel, Logout
+
+🔹 Filters and Create Post
+
+Under the navbar, show 4 filter buttons:➤ All Posts (default active)➤ Text➤ Photo➤ Video
+
+Below the filters, show a "Create Post" button (sporty, bold). On click, show a popup with 3 options:
+
+Post Text
+
+Post Photo
+
+Post Video
+
+🔹 Post Creation Popups
+
+📝 Text Post:
+
+Textarea for content
+
+Button: Mention Users
+
+Opens popup with search bar and real-time list of other registered users
+
+No fake users – if no user found, show: "No users found". after others get registered, show their username in list.
+
+Selected user inserted as @username in caption
+
+Submit button → Post gets added on top of feed in real time
+
+🖼️ Photo Post:
+
+File uploader for image
+
+Optional caption
+
+Buttons:
+
+Mention Users → popup same as above
+
+Tag Users → popup with real user list
+
+Tagged users appear as icon on mediaNo fake users – if no user found, show: "No users found". after others get registered, show their username in list.
+
+After posting: show image, caption, mentions, tags (clickable)
+
+🎥 Video Post:
+
+File uploader for video
+
+Optional caption, mention & tag buttons
+
+Video post displays:
+
+Autoplay ON when in viewport
+
+Mute/Unmute button
+
+All details like photo post
+
+✅ All uploads should persist after refresh and reload and loggon with another ID.**Note- when a user with a username X post anything, user Y login  **
+
+🔷 2. Feed Display
+
+Each post should include:
+
+Profile avatar, full name, username (from logged-in session only)
+
+Media (if any), caption
+
+@Mention (in text) in caption
+
+Tag icon → opens popup with tagged usersbelow post 3 icons- point, comment and share
+
+Point icon:
+
+Unfilled point icon beside post
+
+On click, fill with yellow color
+
+Add 1 point to post owner (irreversible)
+
+Update counter live
+
+Comment buttons:
+
+Comment → shows dropdown:
+
+Add comment field
+
+View All Comments → opens popup
+
+Share buttons:          open a share pop of to share with other real users and below copy link and share on whatsapp.
+
+
+
+3-dot menu on top of post in right section (like instagram):
+
+If post owner: Delete
+
+Else: Report Post
+
+On report, show "Post reported for review"
+
+Send reported post to Admin Panel
+
+✅ Feed should be updated in real time✅ Newest posts come on top✅ Post filters should show respective types only
+
+🔷 3. Comments & Replies
+
+Comments are nested under each post
+
+Add Comment field
+
+View All Comments → popup with all replies
+
+For each comment:
+
+Reply → opens reply field
+
+Delete:
+
+Author can delete own comment and reply
+
+Post owner can delete any comment on their post
+
+Real-time update of comments and replies
+
+🔷 4. Admin Panel → Post Management
+
+In Admin Panel, add a new card: Post Management
+
+Clicking it opens Post Management Page with:
+
+🔹 Section A: Total Activities
+
+Show 2 cards at top:
+
+Total Posts = Text + Photo + Video
+
+New Posts (Last 24 Hrs) → auto-update every new post
+
+Below: Post List
+
+Each row shows:
+
+Username, Full Name, Post Type (text/photo/video), Caption
+
+CTA Buttons:
+
+View → opens popup:
+
+Username, full name, post date/time
+
+Media (if any)
+
+Full caption
+
+Delete → delete from all places:
+
+Feed
+
+Profile
+
+Admin panel
+
+Database
+
+🔹 Section B: Reported Posts
+
+When a post is reported, it’s added here live
+
+Each entry includes:
+
+Username, Post Type, Caption
+
+CTA Buttons:
+
+View: opens full details (same as above)
+
+Delete: remove post from all locations
+
+Ignore: keep the post, remove from reported list
+
+✅ All admin actions must update in real time across entire app
+
+🔷 5. Responsive Design
+
+📱 Mobile:
+
+Navbar → same as above
+
+Filters → horizontal buttons
+
+“Create Post” → full-width sporty button
+
+Feed → vertical scroll layout
+
+Popups/dropdowns → centered and easy to scroll
+
+💻 Desktop:
+
+Feed in grid layout or vertical scroll
+
+Filters left-aligned, Create Post right-aligned
+
+Admin panel has clean rows & popups
+
+✅ Functional Logic (Backend + Frontend)
+
+All actions must be user-specific (no global data bugs)
+
+Fetch and store user data separately (points, likes, posts)
+
+Reported posts and total post counts should auto-update
+
+Mention/Tag popups must pull real users only
+
+Admin panel should be reactive and clean

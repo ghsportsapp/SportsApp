@@ -4,7 +4,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
 // Direct database configuration - try without SSL first
-const DATABASE_URL = "postgresql://postgres:Di}@t)Eap**.r4n&@34.47.244.36:5432/sportapp";
+const DATABASE_URL = "postgresql://postgres:Sportsapp3210()@34.100.154.99:5432/sportsapp";
 
 if (!DATABASE_URL) {
   throw new Error(

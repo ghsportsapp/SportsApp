@@ -31,16 +31,20 @@ export async function uploadToGCS(file: Express.Multer.File): Promise<UploadedFi
     blobStream.on('error', (error) => reject(error));
     
     blobStream.on('finish', async () => {
-      // Make the file public
-      await blob.makePublic();
-      
-      // Get the public URL
-      const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
-      
-      resolve({
-        url: publicUrl,
-        filename: filename,
-      });
+      try {
+        // Generate a signed URL (valid for 1 year for media files)
+        const [signedUrl] = await blob.getSignedUrl({
+          action: 'read',
+          expires: Date.now() + 365 * 24 * 60 * 60 * 1000, // 1 year
+        });
+        
+        resolve({
+          url: signedUrl,
+          filename: filename,
+        });
+      } catch (error) {
+        reject(error);
+      }
     });
 
     blobStream.end(file.buffer);
