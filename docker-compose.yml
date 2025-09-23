@@ -8,8 +8,14 @@ services:
     env_file: .env
     volumes:
       - ./uploads:/app/uploads
+      # Mount Google Cloud credentials (optional, since they're copied in Dockerfile)
+      - ./angad-project-472410-b656ceba9017.json:/app/angad-project-472410-b656ceba9017.json:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health || http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 30s
