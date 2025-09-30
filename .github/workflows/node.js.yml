@@ -29,6 +29,7 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: cp /home/team/SportsApp/.env /home/team/actions-runner/sportsapp/SportsApp/SportsApp/.env
+    - run: cp /home/team/SportsApp/angad-project-472410-b656ceba9017.json /home/team/actions-runner/sportsapp/SportsApp/SportsApp/angad-project-472410-b656ceba9017.json
     - name: Stop existing PM2 processes
       run: pm2 delete all || true
     - name: Start application with PM2
