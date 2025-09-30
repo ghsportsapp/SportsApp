@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [23.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -28,5 +28,5 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build
-    - run: pm2 delete all
-    - run: pm2 start "npm start" --name="frontend"
+    - run: pm2 delete all || true
+    - run: pm2 start "npm start" --name="sportsapp"
