@@ -28,5 +28,12 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build
-    - run: pm2 delete all || true
-    - run: pm2 start "npm start" --name="sportsapp"
+    - name: Install PM2 if not available
+      run: |
+        if ! command -v pm2 &> /dev/null; then
+          npm install -g pm2
+        fi
+    - name: Stop existing PM2 processes
+      run: pm2 delete all || true
+    - name: Start application with PM2
+      run: pm2 start "npm start" --name="sportsapp"
