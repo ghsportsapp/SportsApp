@@ -23,7 +23,7 @@ A comprehensive sports-based web application that combines AI-powered video anal
 - Cricket, Football, Hockey, Badminton, Kabaddi, Athletics, Tennis
 
 ## 🛠 Tech Stack
-
+## small ci/cd checking
 ### Frontend
 - **React 18** with TypeScript
 - **Tailwind CSS** for styling
