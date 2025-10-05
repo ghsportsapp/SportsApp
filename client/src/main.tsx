@@ -18,6 +18,8 @@ performanceMonitor.measureRender('App', () => {
   root.render(<App />);
 });
 
+// Note: Service Worker registration is now handled by vite-plugin-pwa automatically
+
 // Log comprehensive optimization reports in development
 if (import.meta.env.DEV) {
   setTimeout(() => {

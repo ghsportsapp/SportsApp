@@ -8,6 +8,8 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { AdminAuthProvider } from "@/hooks/use-admin-auth";
 import { UploadProvider } from "@/hooks/use-upload";
 import { GlobalUploadBar } from "@/components/global-upload-bar";
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import { PWAUpdateNotification } from "@/components/pwa-update-notification";
 import { Loader2 } from "lucide-react";
 import "./i18n"; // Initialize i18next
 import { ProtectedRoute } from "./lib/protected-route";
@@ -225,6 +227,8 @@ function Router() {
         </Switch>
       </Suspense>
       {shouldShowAIChat && <AIChatWidget />}
+      <PWAInstallPrompt />
+      <PWAUpdateNotification />
     </div>
   );
 }
