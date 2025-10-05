@@ -10,30 +10,12 @@ export default defineConfig({
     runtimeErrorOverlay(),
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-        type: 'module'
-      },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,webp,woff,woff2,ttf,eot}'],
         cleanupOutdatedCaches: true,
-        skipWaiting: true,
-        clientsClaim: true,
-        runtimeCaching: [
-          {
-            urlPattern: /^https?:\/\/.*\.(png|jpg|jpeg|svg|gif|webp)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              }
-            }
-          }
-        ]
+        skipWaiting: true
       },
-      includeAssets: ['favicon.ico', 'icons/*.png', 'manifest.webmanifest'],
+      includeAssets: ['favicon.ico', 'icons/*.png', 'manifest.json'],
       manifest: {
         name: 'SportsApp - Ultimate Sports Network',
         short_name: 'SportsApp',
@@ -43,7 +25,6 @@ export default defineConfig({
         display: 'standalone',
         scope: '/',
         start_url: '/',
-        orientation: 'portrait-primary',
         icons: [
           {
             src: 'icons/icon-192x192.png',
