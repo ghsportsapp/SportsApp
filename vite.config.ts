@@ -15,7 +15,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         skipWaiting: true
       },
-      includeAssets: ['favicon.ico', 'icons/*.png', 'manifest.json'],
+  // Ensure the web manifest is copied; keep file name consistent with index.html link
+  includeAssets: ['favicon.ico', 'icons/*.png', 'manifest.webmanifest'],
       manifest: {
         name: 'SportsApp - Ultimate Sports Network',
         short_name: 'SportsApp',
