@@ -22,7 +22,6 @@ export function PWAInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false);
   const [isMacSafari, setIsMacSafari] = useState(false);
   const [manualMode, setManualMode] = useState<'ios' | 'mac' | null>(null); // show manual instructions (no BIP)
-  // No auto-install attempt state (reverted)
 
   const now = () => Date.now();
   const withinCooldown = (key: string) => {
@@ -45,12 +44,12 @@ export function PWAInstallPrompt() {
 
   const maybeShowManual = useCallback(() => {
     if (isStandalone) return;
-    // iOS manual path (always delayed to avoid immediate flash)
+    // iOS manual path
     if (isIOS && !withinCooldown(MANUAL_IOS_KEY)) {
       const t = setTimeout(() => { setManualMode('ios'); setShowPrompt(true); }, 2500);
       return () => clearTimeout(t);
     }
-    // macOS Safari manual path
+    // macOS Safari manual path (no beforeinstallprompt event)
     if (isMacSafari && !withinCooldown(MANUAL_MAC_KEY)) {
       const t = setTimeout(() => { setManualMode('mac'); setShowPrompt(true); }, 2500);
       return () => clearTimeout(t);
@@ -64,16 +63,19 @@ export function PWAInstallPrompt() {
 
     const processEvent = (evt: BeforeInstallPromptEvent) => {
       if (withinCooldown(DISMISS_KEY)) return;
+      // Android / Chromium path: we have an install event so no manual instructions
       setDeferredPrompt(evt);
       setManualMode(null);
-      setShowPrompt(true); // immediate show (reverted behavior)
+      setShowPrompt(true);
     };
 
     // If early-captured
-    if (window.__bipEvent) processEvent(window.__bipEvent);
+    if (window.__bipEvent) {
+      processEvent(window.__bipEvent);
+    }
 
     const bipReady = () => { if (window.__bipEvent) processEvent(window.__bipEvent); };
-  const lateHandler = (e: Event) => { e.preventDefault(); processEvent(e as BeforeInstallPromptEvent); };
+    const lateHandler = (e: Event) => { e.preventDefault(); processEvent(e as BeforeInstallPromptEvent); };
     window.addEventListener('bip-ready', bipReady);
     window.addEventListener('beforeinstallprompt', lateHandler);
     window.addEventListener('appinstalled', () => { setShowPrompt(false); setDeferredPrompt(null); });
