@@ -15,11 +15,6 @@ const MANUAL_IOS_KEY = 'pwa_ios_dismissed_at';         // iOS instructions coold
 const MANUAL_MAC_KEY = 'pwa_mac_dismissed_at';         // macOS Safari instructions cooldown
 const DISMISS_HOURS = 24; // cooldown to re-show any prompt
 
-// Feature toggles / tuning
-const AUTO_SHOW_DELAY_MS = 600;            // how soon after event/manual detection to show overlay
-const ATTEMPT_AUTO_INSTALL_ON_FIRST_GESTURE = true; // try to call prompt() on first pointer interaction (Android/Chromium only)
-const SUPPRESS_MANUAL_DELAY_IF_FIRST_VISIT = true;  // show iOS/mac instructions immediately (no 2.5s delay) on first visit
-
 export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -27,7 +22,7 @@ export function PWAInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false);
   const [isMacSafari, setIsMacSafari] = useState(false);
   const [manualMode, setManualMode] = useState<'ios' | 'mac' | null>(null); // show manual instructions (no BIP)
-  const [autoInstallAttempted, setAutoInstallAttempted] = useState(false);
+  // No auto-install attempt state (reverted)
 
   const now = () => Date.now();
   const withinCooldown = (key: string) => {
@@ -50,23 +45,15 @@ export function PWAInstallPrompt() {
 
   const maybeShowManual = useCallback(() => {
     if (isStandalone) return;
-    // iOS manual path
+    // iOS manual path (always delayed to avoid immediate flash)
     if (isIOS && !withinCooldown(MANUAL_IOS_KEY)) {
-      if (SUPPRESS_MANUAL_DELAY_IF_FIRST_VISIT && !localStorage.getItem(MANUAL_IOS_KEY)) {
-        setManualMode('ios'); setShowPrompt(true);
-      } else {
-        const t = setTimeout(() => { setManualMode('ios'); setShowPrompt(true); }, 2500);
-        return () => clearTimeout(t);
-      }
+      const t = setTimeout(() => { setManualMode('ios'); setShowPrompt(true); }, 2500);
+      return () => clearTimeout(t);
     }
-    // macOS Safari manual path (no beforeinstallprompt event)
+    // macOS Safari manual path
     if (isMacSafari && !withinCooldown(MANUAL_MAC_KEY)) {
-      if (SUPPRESS_MANUAL_DELAY_IF_FIRST_VISIT && !localStorage.getItem(MANUAL_MAC_KEY)) {
-        setManualMode('mac'); setShowPrompt(true);
-      } else {
-        const t = setTimeout(() => { setManualMode('mac'); setShowPrompt(true); }, 2500);
-        return () => clearTimeout(t);
-      }
+      const t = setTimeout(() => { setManualMode('mac'); setShowPrompt(true); }, 2500);
+      return () => clearTimeout(t);
     }
   }, [isIOS, isMacSafari, isStandalone]);
 
@@ -77,35 +64,16 @@ export function PWAInstallPrompt() {
 
     const processEvent = (evt: BeforeInstallPromptEvent) => {
       if (withinCooldown(DISMISS_KEY)) return;
-      // Android / Chromium path: we have an install event so no manual instructions
       setDeferredPrompt(evt);
       setManualMode(null);
-      // Show after a small delay to avoid layout shift on initial paint
-      setTimeout(() => setShowPrompt(true), AUTO_SHOW_DELAY_MS);
-      if (ATTEMPT_AUTO_INSTALL_ON_FIRST_GESTURE) {
-        // Attach one-time listener to attempt automatic prompt on first explicit user gesture
-        const gestureHandler = () => {
-          if (!autoInstallAttempted && deferredPrompt) {
-            try {
-              deferredPrompt.prompt();
-              setAutoInstallAttempted(true);
-            } catch (err) {
-              // swallow errors; user can still click Install
-              console.warn('[PWA] auto install attempt failed:', err);
-            }
-          }
-        };
-        window.addEventListener('pointerdown', gestureHandler, { once: true });
-      }
+      setShowPrompt(true); // immediate show (reverted behavior)
     };
 
     // If early-captured
-    if (window.__bipEvent) {
-      processEvent(window.__bipEvent);
-    }
+    if (window.__bipEvent) processEvent(window.__bipEvent);
 
     const bipReady = () => { if (window.__bipEvent) processEvent(window.__bipEvent); };
-    const lateHandler = (e: Event) => { e.preventDefault(); processEvent(e as BeforeInstallPromptEvent); };
+  const lateHandler = (e: Event) => { e.preventDefault(); processEvent(e as BeforeInstallPromptEvent); };
     window.addEventListener('bip-ready', bipReady);
     window.addEventListener('beforeinstallprompt', lateHandler);
     window.addEventListener('appinstalled', () => { setShowPrompt(false); setDeferredPrompt(null); });
