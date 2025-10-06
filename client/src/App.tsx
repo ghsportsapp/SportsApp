@@ -12,6 +12,7 @@ import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { PWAUpdateNotification } from "@/components/pwa-update-notification";
 import { PWADebugger } from "@/components/pwa-debugger";
 import { MobileInstallGuide } from "@/components/mobile-install-guide";
+import { IOSInstallPrompt } from "@/components/ios-install-prompt";
 import { Loader2 } from "lucide-react";
 import "./i18n"; // Initialize i18next
 import { ProtectedRoute } from "./lib/protected-route";
@@ -231,8 +232,9 @@ function Router() {
       {shouldShowAIChat && <AIChatWidget />}
       <PWAInstallPrompt />
       <PWAUpdateNotification />
-      <MobileInstallGuide />
-      <PWADebugger />
+      <IOSInstallPrompt />
+      {/* <MobileInstallGuide /> */}
+      {/* <PWADebugger /> */}
     </div>
   );
 }
