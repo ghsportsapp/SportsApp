@@ -10,16 +10,18 @@ interface BeforeInstallPromptEvent extends Event {
 
 declare global { interface Window { __bipEvent?: BeforeInstallPromptEvent | null } }
 
-const DISMISS_KEY = 'pwa_install_dismissed_at';
-const IOS_DISMISS_KEY = 'pwa_ios_dismissed_at';
-const DISMISS_HOURS = 24; // cooldown to re-show
+const DISMISS_KEY = 'pwa_install_dismissed_at';        // Android (BIP event) cooldown
+const MANUAL_IOS_KEY = 'pwa_ios_dismissed_at';         // iOS instructions cooldown
+const MANUAL_MAC_KEY = 'pwa_mac_dismissed_at';         // macOS Safari instructions cooldown
+const DISMISS_HOURS = 24; // cooldown to re-show any prompt
 
 export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
-  const [iosMode, setIOSMode] = useState(false); // show iOS instructions
+  const [isMacSafari, setIsMacSafari] = useState(false);
+  const [manualMode, setManualMode] = useState<'ios' | 'mac' | null>(null); // show manual instructions (no BIP)
 
   const now = () => Date.now();
   const withinCooldown = (key: string) => {
@@ -28,17 +30,31 @@ export function PWAInstallPrompt() {
   const markDismiss = (key: string) => { try { localStorage.setItem(key, now().toString()); } catch {} };
 
   const detect = useCallback(() => {
-    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true);
-    setIsIOS(/iphone|ipad|ipod/i.test(window.navigator.userAgent));
+    const ua = window.navigator.userAgent;
+    const lower = ua.toLowerCase();
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+    setIsStandalone(standalone);
+    const isiOS = /iphone|ipad|ipod/.test(lower);
+    setIsIOS(isiOS);
+    // Heuristic for macOS Safari: contains Safari, not Chrome/Chromium/Edge/Firefox, platform Mac, not iOS
+    const safariLike = /safari/i.test(ua) && !/(chrome|chromium|crios|edg|firefox|fxios|opera|opr)/i.test(ua);
+    const isMac = !isiOS && /Macintosh|Mac OS X/.test(ua);
+    setIsMacSafari(safariLike && isMac);
   }, []);
 
-  const maybeShowIOS = useCallback(() => {
-    if (!isIOS || isStandalone) return;
-    if (withinCooldown(IOS_DISMISS_KEY)) return;
-    // delay a little to avoid flash during initial load
-    const t = setTimeout(() => { setIOSMode(true); setShowPrompt(true); }, 2500);
-    return () => clearTimeout(t);
-  }, [isIOS, isStandalone]);
+  const maybeShowManual = useCallback(() => {
+    if (isStandalone) return;
+    // iOS manual path
+    if (isIOS && !withinCooldown(MANUAL_IOS_KEY)) {
+      const t = setTimeout(() => { setManualMode('ios'); setShowPrompt(true); }, 2500);
+      return () => clearTimeout(t);
+    }
+    // macOS Safari manual path (no beforeinstallprompt event)
+    if (isMacSafari && !withinCooldown(MANUAL_MAC_KEY)) {
+      const t = setTimeout(() => { setManualMode('mac'); setShowPrompt(true); }, 2500);
+      return () => clearTimeout(t);
+    }
+  }, [isIOS, isMacSafari, isStandalone]);
 
   useEffect(() => {
     detect();
@@ -47,8 +63,9 @@ export function PWAInstallPrompt() {
 
     const processEvent = (evt: BeforeInstallPromptEvent) => {
       if (withinCooldown(DISMISS_KEY)) return;
+      // Android / Chromium path: we have an install event so no manual instructions
       setDeferredPrompt(evt);
-      setIOSMode(false);
+      setManualMode(null);
       setShowPrompt(true);
     };
 
@@ -63,14 +80,14 @@ export function PWAInstallPrompt() {
     window.addEventListener('beforeinstallprompt', lateHandler);
     window.addEventListener('appinstalled', () => { setShowPrompt(false); setDeferredPrompt(null); });
 
-    const cleanupIOS = maybeShowIOS();
+  const cleanupManual = maybeShowManual();
 
     return () => {
       window.removeEventListener('bip-ready', bipReady);
       window.removeEventListener('beforeinstallprompt', lateHandler);
-      if (cleanupIOS) cleanupIOS();
+      if (cleanupManual) cleanupManual();
     };
-  }, [detect, maybeShowIOS]);
+  }, [detect, maybeShowManual]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
@@ -82,7 +99,9 @@ export function PWAInstallPrompt() {
   };
 
   const handleDismiss = () => {
-    if (iosMode) markDismiss(IOS_DISMISS_KEY); else markDismiss(DISMISS_KEY);
+    if (manualMode === 'ios') markDismiss(MANUAL_IOS_KEY);
+    else if (manualMode === 'mac') markDismiss(MANUAL_MAC_KEY);
+    else markDismiss(DISMISS_KEY);
     setShowPrompt(false);
     setDeferredPrompt(null);
   };
@@ -91,27 +110,32 @@ export function PWAInstallPrompt() {
   useEffect(() => {
     const manual = () => {
       if (deferredPrompt) {
-        setIOSMode(false);
+        setManualMode(null);
         setShowPrompt(true);
-      } else if (isIOS && !isStandalone && !withinCooldown(IOS_DISMISS_KEY)) {
-        setIOSMode(true);
+      } else if (isIOS && !isStandalone && !withinCooldown(MANUAL_IOS_KEY)) {
+        setManualMode('ios');
+        setShowPrompt(true);
+      } else if (isMacSafari && !isStandalone && !withinCooldown(MANUAL_MAC_KEY)) {
+        setManualMode('mac');
         setShowPrompt(true);
       }
     };
     window.addEventListener('open-install-prompt', manual);
     return () => window.removeEventListener('open-install-prompt', manual);
-  }, [deferredPrompt, isIOS, isStandalone]);
+  }, [deferredPrompt, isIOS, isMacSafari, isStandalone]);
 
   if (!showPrompt) return null;
 
-  const showIOSInstructions = iosMode && !deferredPrompt;
+  const showManualInstructions = !!manualMode && !deferredPrompt;
 
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-2">
-          {showIOSInstructions ? <Info className="h-5 w-5 text-blue-600" /> : <Download className="h-5 w-5 text-blue-600" />}
-          <h3 className="font-medium text-gray-900 dark:text-white">{showIOSInstructions ? 'Add to Home Screen' : 'Install SportsApp'}</h3>
+          {showManualInstructions ? <Info className="h-5 w-5 text-blue-600" /> : <Download className="h-5 w-5 text-blue-600" />}
+          <h3 className="font-medium text-gray-900 dark:text-white">
+            {showManualInstructions ? (manualMode === 'mac' ? 'Add to Dock' : 'Add to Home Screen') : 'Install SportsApp'}
+          </h3>
         </div>
         <Button
           variant="ghost"
@@ -122,20 +146,33 @@ export function PWAInstallPrompt() {
           <X className="h-4 w-4" />
         </Button>
       </div>
-      {showIOSInstructions ? (
+      {showManualInstructions ? (
         <div className="text-sm text-gray-600 dark:text-gray-300 mb-4 space-y-2">
-          <p>To install on iOS:</p>
-          <ol className="list-decimal list-inside space-y-1">
-            <li>Tap the <span className="font-medium">Share</span> icon in Safari.</li>
-            <li>Select <span className="font-medium">Add to Home Screen</span>.</li>
-            <li>Tap <span className="font-medium">Add</span> to finish.</li>
-          </ol>
-          <p className="text-xs text-gray-500 dark:text-gray-400">iOS does not show an automatic prompt.</p>
+          {manualMode === 'ios' && (
+            <>
+              <p>To install on iPhone / iPad:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Tap the <span className="font-medium">Share</span> icon in Safari.</li>
+                <li>Select <span className="font-medium">Add to Home Screen</span>.</li>
+                <li>Tap <span className="font-medium">Add</span> to finish.</li>
+              </ol>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Safari on iOS doesn’t fire an install prompt automatically.</p>
+            </>
+          )}
+          {manualMode === 'mac' && (
+            <>
+              <p>To install as a macOS web app:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>In Safari menu choose <span className="font-medium">File → Add to Dock</span> (or Share → Add to Dock).</li>
+                <li>Optionally rename, then click <span className="font-medium">Add</span>.</li>
+                <li>Launch it from the Dock like a native app.</li>
+              </ol>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Safari doesn’t show the Chromium install banner.</p>
+            </>
+          )}
         </div>
       ) : (
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-          Install SportsApp for a faster, app-like experience with offline access.
-        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Install SportsApp for a faster, app-like experience with offline access.</p>
       )}
       <div className="flex space-x-2">
         <Button
@@ -146,7 +183,7 @@ export function PWAInstallPrompt() {
         >
           Not now
         </Button>
-        {!showIOSInstructions && deferredPrompt && (
+        {!showManualInstructions && deferredPrompt && (
           <Button
             onClick={handleInstall}
             size="sm"
