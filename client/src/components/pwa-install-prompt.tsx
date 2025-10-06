@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, Download } from 'lucide-react';
+import { X, Download, Smartphone } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -14,51 +14,94 @@ interface BeforeInstallPromptEvent extends Event {
 export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    const handler = (e: Event) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowInstallPrompt(true);
+    // Check if app is already installed
+    const checkInstallStatus = () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+      const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
+      
+      setIsInstalled(isStandalone || isFullscreen || isMinimalUI);
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
+    checkInstallStatus();
+
+    // Listen for the beforeinstallprompt event
+    const beforeInstallPromptHandler = (e: Event) => {
+      console.log('PWA: beforeinstallprompt event fired');
+      // Don't prevent the default - let the browser show its native prompt
+      // But also store the event for our custom prompt
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      
+      // Show our custom prompt after a short delay to not interfere
+      setTimeout(() => {
+        if (!isInstalled) {
+          setShowInstallPrompt(true);
+        }
+      }, 3000); // Wait 3 seconds to allow native prompt first
+    };
+
+    // Listen for app installation
+    const appInstalledHandler = () => {
+      console.log('PWA: App was installed');
+      setIsInstalled(true);
+      setShowInstallPrompt(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', beforeInstallPromptHandler);
+    window.addEventListener('appinstalled', appInstalledHandler);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('beforeinstallprompt', beforeInstallPromptHandler);
+      window.removeEventListener('appinstalled', appInstalledHandler);
     };
-  }, []);
+  }, [isInstalled]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
-    // Show the install prompt
-    deferredPrompt.prompt();
+    try {
+      // Show the install prompt
+      await deferredPrompt.prompt();
 
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    console.log(`User response to the install prompt: ${outcome}`);
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log(`User response to the install prompt: ${outcome}`);
 
-    // Clear the deferredPrompt
-    setDeferredPrompt(null);
-    setShowInstallPrompt(false);
+      // Clear the deferredPrompt
+      setDeferredPrompt(null);
+      setShowInstallPrompt(false);
+
+      if (outcome === 'accepted') {
+        console.log('PWA: User accepted the install prompt');
+      }
+    } catch (error) {
+      console.error('PWA: Error during installation:', error);
+    }
   };
 
   const handleDismiss = () => {
     setShowInstallPrompt(false);
     setDeferredPrompt(null);
+    // Remember that user dismissed it for this session
+    sessionStorage.setItem('pwa-install-dismissed', 'true');
   };
 
-  if (!showInstallPrompt || !deferredPrompt) return null;
+  // Don't show if already installed or dismissed
+  if (isInstalled || !showInstallPrompt || !deferredPrompt) return null;
+
+  // Don't show if dismissed this session
+  if (sessionStorage.getItem('pwa-install-dismissed')) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50">
+    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50 animate-in slide-in-from-bottom-5">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-2">
-          <Download className="h-5 w-5 text-blue-600" />
+          <Smartphone className="h-5 w-5 text-blue-600" />
           <h3 className="font-medium text-gray-900 dark:text-white">Install SportsApp</h3>
         </div>
         <Button
@@ -71,7 +114,7 @@ export function PWAInstallPrompt() {
         </Button>
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-        Install SportsApp for a faster, app-like experience with offline access.
+        Install SportsApp for a faster, app-like experience with offline access and push notifications.
       </p>
       <div className="flex space-x-2">
         <Button
@@ -85,8 +128,9 @@ export function PWAInstallPrompt() {
         <Button
           onClick={handleInstall}
           size="sm"
-          className="flex-1"
+          className="flex-1 bg-blue-600 hover:bg-blue-700"
         >
+          <Download className="h-4 w-4 mr-2" />
           Install
         </Button>
       </div>

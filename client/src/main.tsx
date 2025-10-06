@@ -6,10 +6,14 @@ import { performanceMonitor } from "./utils/performance-monitor";
 import { memoryOptimizer } from "./utils/memory-optimizer";
 import { generateOptimizationReport } from "./utils/performance-report";
 import { generateFinalOptimizationReport } from "./utils/final-optimization-check";
+import { logPWAEvents } from "./utils/pwa-logger";
 
 // Initialize all performance optimizations
 initializeBundleOptimizations();
 memoryOptimizer.startMemoryMonitoring();
+
+// Initialize PWA event logging
+logPWAEvents();
 
 // Performance-monitored app rendering
 const root = createRoot(document.getElementById("root")!);

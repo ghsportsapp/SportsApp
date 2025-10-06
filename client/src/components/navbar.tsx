@@ -12,6 +12,7 @@ import { Search, Bell, MessageCircle, Home, Users, FileText, Upload, User, Shiel
 import { apiRequest } from "@/lib/queryClient";
 import { SearchPopup } from "@/components/search-popup";
 import { NotificationDrawer } from "@/components/notification-drawer";
+import { InstallButton } from "@/components/install-button";
 
 export function Navbar() {
   const [, setLocation] = useLocation();
@@ -188,6 +189,9 @@ export function Navbar() {
                   </span>
                 )}
               </Button>
+
+              {/* Install App Button */}
+              <InstallButton />
 
               {/* Enhanced Profile Dropdown */}
               <DropdownMenu>

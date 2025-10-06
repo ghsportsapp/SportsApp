@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     runtimeErrorOverlay(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       devOptions: {
         enabled: true,
         type: 'module'
@@ -43,6 +43,7 @@ export default defineConfig({
         display: 'standalone',
         scope: '/',
         start_url: '/',
+        id: '/',
         orientation: 'portrait-primary',
         categories: ['sports', 'social', 'lifestyle'],
         lang: 'en',
