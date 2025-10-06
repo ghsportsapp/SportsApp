@@ -231,8 +231,8 @@ function Router() {
       {shouldShowAIChat && <AIChatWidget />}
       <PWAInstallPrompt />
       <PWAUpdateNotification />
-      {/* <MobileInstallGuide /> */}
-      {/* <PWADebugger /> */}
+      <MobileInstallGuide />
+      <PWADebugger />
     </div>
   );
 }
