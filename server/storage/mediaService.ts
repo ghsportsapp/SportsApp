@@ -26,11 +26,20 @@ export interface MediaUploadResult {
 
 export async function handleMediaUpload(req: Request): Promise<MediaUploadResult> {
   try {
-    if (!req.files || !Array.isArray(req.files)) {
+    let filesToUpload: Express.Multer.File[] = [];
+
+    // Handle both single file (req.file) and multiple files (req.files)
+    if (req.file) {
+      // Single file upload
+      filesToUpload = [req.file];
+    } else if (req.files && Array.isArray(req.files)) {
+      // Multiple files upload
+      filesToUpload = req.files as Express.Multer.File[];
+    } else {
       throw new Error('No files uploaded');
     }
 
-    const uploadPromises = (req.files as Express.Multer.File[]).map((file) => uploadToGCS(file));
+    const uploadPromises = filesToUpload.map((file) => uploadToGCS(file));
     const uploadedFiles = await Promise.all(uploadPromises);
 
     return {
