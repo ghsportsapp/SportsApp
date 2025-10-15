@@ -51,14 +51,26 @@ export function PWAInstallPrompt() {
       setDeferredPrompt(null);
     };
 
+    // Listen for custom event to show install prompt
+    const showInstallPromptHandler = () => {
+      console.log('PWA: Custom show install prompt event');
+      // Clear dismissal and show prompt if we have a deferred prompt
+      sessionStorage.removeItem('pwa-install-dismissed');
+      if (deferredPrompt && !isInstalled) {
+        setShowInstallPrompt(true);
+      }
+    };
+
     window.addEventListener('beforeinstallprompt', beforeInstallPromptHandler);
     window.addEventListener('appinstalled', appInstalledHandler);
+    window.addEventListener('show-pwa-install-prompt', showInstallPromptHandler);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', beforeInstallPromptHandler);
       window.removeEventListener('appinstalled', appInstalledHandler);
+      window.removeEventListener('show-pwa-install-prompt', showInstallPromptHandler);
     };
-  }, [isInstalled]);
+  }, [isInstalled, deferredPrompt]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
@@ -98,7 +110,10 @@ export function PWAInstallPrompt() {
   if (sessionStorage.getItem('pwa-install-dismissed')) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50 animate-in slide-in-from-bottom-5">
+    <div 
+      data-pwa-install-prompt
+      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50 animate-in slide-in-from-bottom-5"
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-2">
           <Smartphone className="h-5 w-5 text-blue-600" />
