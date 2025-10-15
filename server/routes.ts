@@ -1030,7 +1030,26 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Upload profile picture
-  app.post("/api/users/:id/profile-picture", upload.single('profilePicture'), async (req, res) => {
+  app.post("/api/users/:id/profile-picture", mediaUpload.single('profilePicture'), (error: any, req: any, res: any, next: any) => {
+    // Handle multer errors
+    if (error) {
+      console.error('Error in POST /api/users/:id/profile-picture:', error);
+      
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ 
+          error: 'File too large. Maximum file size is 1GB per file.',
+          code: 'FILE_TOO_LARGE'
+        });
+      }
+      
+      return res.status(400).json({ 
+        error: error.message || 'File upload error',
+        code: error.code || 'UPLOAD_ERROR'
+      });
+    }
+    
+    next();
+  }, async (req: any, res: any) => {
     try {
       const userId = parseInt(req.params.id);
       
@@ -1042,9 +1061,20 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "No file uploaded" });
       }
       
-      const profilePicture = `/uploads/${req.file.filename}`;
+      // Upload to Google Cloud Storage
+      const result = await handleMediaUpload(req);
+      if (result.error) {
+        return res.status(400).json({ error: result.error });
+      }
+      
+      if (result.files.length === 0) {
+        return res.status(400).json({ error: "Failed to upload file" });
+      }
+      
+      const profilePicture = result.files[0].url;
       res.json({ profilePicture });
     } catch (error: any) {
+      console.error('Error uploading profile picture:', error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -1414,15 +1444,33 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.post("/api/drills/:drillId/upload", upload.single('video'), async (req, res) => {
+  app.post("/api/drills/:drillId/upload", mediaUpload.single('video'), (error: any, req: any, res: any, next: any) => {
+    // Handle multer errors
+    if (error) {
+      console.error('Error in POST /api/drills/:drillId/upload:', error);
+      
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ 
+          error: 'File too large. Maximum file size is 1GB per file.',
+          code: 'FILE_TOO_LARGE'
+        });
+      }
+      
+      return res.status(400).json({ 
+        error: error.message || 'File upload error',
+        code: error.code || 'UPLOAD_ERROR'
+      });
+    }
+    
+    next();
+  }, async (req: any, res: any) => {
     try {
       console.log("Drill upload request received:", {
         drillId: req.params.drillId,
         hasFile: !!req.file,
         hasUser: !!req.user,
         fileInfo: req.file ? {
-          filename: req.file.filename,
-          originalname: req.file.originalname,
+          filename: req.file.originalname,
           mimetype: req.file.mimetype,
           size: req.file.size
         } : null
@@ -1443,7 +1491,17 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ message: "Invalid drill ID" });
       }
 
-      const videoUrl = `/uploads/${req.file.filename}`;
+      // Upload to Google Cloud Storage
+      const result = await handleMediaUpload(req);
+      if (result.error) {
+        return res.status(400).json({ error: result.error });
+      }
+      
+      if (result.files.length === 0) {
+        return res.status(400).json({ error: "Failed to upload file" });
+      }
+
+      const videoUrl = result.files[0].url;
 
       const userDrill = await storage.uploadDrillVideo(req.user.id, drillId, videoUrl);
       console.log("Upload successful:", userDrill);
@@ -1727,7 +1785,26 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.post("/api/tryouts/:tryoutId/apply", upload.single('video'), async (req, res) => {
+  app.post("/api/tryouts/:tryoutId/apply", mediaUpload.single('video'), (error: any, req: any, res: any, next: any) => {
+    // Handle multer errors
+    if (error) {
+      console.error('Error in POST /api/tryouts/:tryoutId/apply:', error);
+      
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ 
+          error: 'File too large. Maximum file size is 1GB per file.',
+          code: 'FILE_TOO_LARGE'
+        });
+      }
+      
+      return res.status(400).json({ 
+        error: error.message || 'File upload error',
+        code: error.code || 'UPLOAD_ERROR'
+      });
+    }
+    
+    next();
+  }, async (req: any, res: any) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -1748,7 +1825,17 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ message: "All fields are required" });
       }
 
-      const videoUrl = `/uploads/${req.file.filename}`;
+      // Upload to Google Cloud Storage
+      const result = await handleMediaUpload(req);
+      if (result.error) {
+        return res.status(400).json({ error: result.error });
+      }
+      
+      if (result.files.length === 0) {
+        return res.status(400).json({ error: "Failed to upload file" });
+      }
+
+      const videoUrl = result.files[0].url;
 
       const application = await storage.createTryoutApplication({
         userId: req.user.id,
@@ -2064,7 +2151,26 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Cricket Coaching API endpoints
-  app.post("/api/cricket-coaching/upload", upload.single("video"), async (req, res) => {
+  app.post("/api/cricket-coaching/upload", mediaUpload.single("video"), (error: any, req: any, res: any, next: any) => {
+    // Handle multer errors
+    if (error) {
+      console.error('Error in POST /api/cricket-coaching/upload:', error);
+      
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ 
+          error: 'File too large. Maximum file size is 1GB per file.',
+          code: 'FILE_TOO_LARGE'
+        });
+      }
+      
+      return res.status(400).json({ 
+        error: error.message || 'File upload error',
+        code: error.code || 'UPLOAD_ERROR'
+      });
+    }
+    
+    next();
+  }, async (req: any, res: any) => {
     try {
       console.log('Cricket upload request:', {
         isAuthenticated: req.isAuthenticated(),
@@ -2086,8 +2192,17 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ message: "Invalid coaching type" });
       }
 
-      // Save video URL
-      const videoUrl = `/uploads/${req.file.filename}`;
+      // Upload to Google Cloud Storage
+      const result = await handleMediaUpload(req);
+      if (result.error) {
+        return res.status(400).json({ error: result.error });
+      }
+      
+      if (result.files.length === 0) {
+        return res.status(400).json({ error: "Failed to upload file" });
+      }
+
+      const videoUrl = result.files[0].url;
       
       res.json({
         videoUrl,

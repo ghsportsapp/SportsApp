@@ -71,6 +71,23 @@
   <!-- Web App Manifest -->
   <link rel="manifest" href="/manifest.webmanifest" />
 
+  <!-- Early capture of beforeinstallprompt so React component can show prompt even if event fires before hydration -->
+  <script>
+    (function(){
+      window.__bipEvent = null; // will hold the deferred prompt
+      window.addEventListener('beforeinstallprompt', function(e) {
+        try {
+          console.log('[PWA] early beforeinstallprompt event captured');
+          e.preventDefault(); // prevent auto-mini-infobar
+          window.__bipEvent = e;
+          window.dispatchEvent(new CustomEvent('bip-ready'));
+        } catch(err) {
+          console.warn('[PWA] error handling beforeinstallprompt', err);
+        }
+      });
+    })();
+  </script>
+
   <!-- Font preloads -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
