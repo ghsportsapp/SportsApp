@@ -20,6 +20,8 @@ export function PWAInstallPrompt() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
+  console.log('PWA: Component state -', { deferredPrompt: !!deferredPrompt, showInstallPrompt, isInstalled });
+
   useEffect(() => {
     // Check if app is already installed
     const checkInstallStatus = () => {
@@ -27,7 +29,25 @@ export function PWAInstallPrompt() {
       const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
       const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
       
-      setIsInstalled(isStandalone || isFullscreen || isMinimalUI);
+      const installed = isStandalone || isFullscreen || isMinimalUI;
+      setIsInstalled(installed);
+      
+      console.log('PWA: Install status check -', { 
+        installed, 
+        isStandalone, 
+        isFullscreen, 
+        isMinimalUI,
+        dismissed: !!sessionStorage.getItem('pwa-install-dismissed')
+      });
+      
+      // If not installed and not dismissed recently, show prompt after delay
+      if (!installed && !sessionStorage.getItem('pwa-install-dismissed')) {
+        console.log('PWA: Scheduling initial prompt to show in 3 seconds');
+        setTimeout(() => {
+          console.log('PWA: Showing initial prompt');
+          setShowInstallPrompt(true);
+        }, 3000); // Show after 3 seconds on initial load
+      }
     };
 
     checkInstallStatus();
@@ -35,16 +55,15 @@ export function PWAInstallPrompt() {
     // Listen for the beforeinstallprompt event
     const beforeInstallPromptHandler = (e: Event) => {
       console.log('PWA: beforeinstallprompt event fired');
-      // Don't prevent the default - let the browser show its native prompt
-      // But also store the event for our custom prompt
+      e.preventDefault(); // Prevent the browser's default install prompt
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       
-      // Show our custom prompt after a short delay to not interfere
-      setTimeout(() => {
-        if (!isInstalled) {
+      // If we weren't already showing the prompt, show it now
+      if (!isInstalled && !sessionStorage.getItem('pwa-install-dismissed')) {
+        setTimeout(() => {
           setShowInstallPrompt(true);
-        }
-      }, 3000); // Wait 3 seconds to allow native prompt first
+        }, 1000); // Shorter delay when event fires
+      }
     };
 
     // Listen for app installation
@@ -58,9 +77,9 @@ export function PWAInstallPrompt() {
     // Listen for custom event to show install prompt
     const showInstallPromptHandler = () => {
       console.log('PWA: Custom show install prompt event');
-      // Clear dismissal and show prompt if we have a deferred prompt
+      // Clear dismissal and always show prompt when manually triggered
       sessionStorage.removeItem('pwa-install-dismissed');
-      if (deferredPrompt && !isInstalled) {
+      if (!isInstalled) {
         setShowInstallPrompt(true);
       }
     };
@@ -74,29 +93,45 @@ export function PWAInstallPrompt() {
       window.removeEventListener('appinstalled', appInstalledHandler);
       window.removeEventListener('show-pwa-install-prompt', showInstallPromptHandler);
     };
-  }, [isInstalled, deferredPrompt]);
+  }, [isInstalled]);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
+    if (deferredPrompt) {
+      try {
+        // Show the install prompt
+        await deferredPrompt.prompt();
 
-    try {
-      // Show the install prompt
-      await deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        console.log(`User response to the install prompt: ${outcome}`);
 
-      // Wait for the user to respond to the prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      console.log(`User response to the install prompt: ${outcome}`);
+        // Clear the deferredPrompt
+        setDeferredPrompt(null);
+        setShowInstallPrompt(false);
 
-      // Clear the deferredPrompt
-      setDeferredPrompt(null);
-      setShowInstallPrompt(false);
-
-      if (outcome === 'accepted') {
-        console.log('PWA: User accepted the install prompt');
+        if (outcome === 'accepted') {
+          console.log('PWA: User accepted the install prompt');
+        }
+      } catch (error) {
+        console.error('PWA: Error during installation:', error);
       }
-    } catch (error) {
-      console.error('PWA: Error during installation:', error);
+    } else {
+      // Fallback: Show manual installation instructions
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      
+      let instructions = '';
+      if (isIOS) {
+        instructions = 'To install this app on iOS:\n\n1. Tap the Share button (square with arrow)\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to confirm';
+      } else if (isSafari) {
+        instructions = 'To install this app on Safari:\n\n1. Click the Share button in the toolbar\n2. Click "Add to Dock" or "Add to Home Screen"';
+      } else {
+        instructions = 'To install this app:\n\n1. Look for an install icon in your browser\'s address bar\n2. Or check your browser\'s menu for "Install" or "Add to Home Screen" option\n3. Follow the prompts to install';
+      }
+      
+      alert(instructions);
+      setShowInstallPrompt(false);
     }
   };
 
@@ -107,11 +142,14 @@ export function PWAInstallPrompt() {
     sessionStorage.setItem('pwa-install-dismissed', 'true');
   };
 
-  // Don't show if already installed or dismissed
-  if (isInstalled || !showInstallPrompt || !deferredPrompt) return null;
+  // Don't show if already installed
+  if (isInstalled) return null;
 
-  // Don't show if dismissed this session
-  if (sessionStorage.getItem('pwa-install-dismissed')) return null;
+  // Don't show if not supposed to show
+  if (!showInstallPrompt) return null;
+
+  // Don't show if dismissed this session (unless manually triggered)
+  if (sessionStorage.getItem('pwa-install-dismissed') && !showInstallPrompt) return null;
 
   return (
     <div 
@@ -133,7 +171,10 @@ export function PWAInstallPrompt() {
         </Button>
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-        Install SportsApp for a faster, app-like experience with offline access and push notifications.
+        {deferredPrompt 
+          ? "Install SportsApp for a faster, app-like experience with offline access and push notifications."
+          : "Get the SportsApp on your device for quick access and better performance."
+        }
       </p>
       <div className="flex space-x-2">
         <Button
@@ -150,7 +191,7 @@ export function PWAInstallPrompt() {
           className="flex-1 bg-blue-600 hover:bg-blue-700"
         >
           <Download className="h-4 w-4 mr-2" />
-          Install
+          {deferredPrompt ? "Install" : "How to Install"}
         </Button>
       </div>
     </div>
