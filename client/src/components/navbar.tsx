@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/use-auth";
 import { useAdminAuth } from "@/hooks/use-admin-auth";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePWAInstall } from "@/hooks/use-pwa-install";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -20,6 +21,7 @@ export function Navbar() {
   const { user, logoutMutation } = useAuth();
   const { isAdmin, logoutMutation: adminLogoutMutation } = useAdminAuth();
   const isMobile = useIsMobile();
+  const { isInstalled, handleInstall } = usePWAInstall();
   const [searchPopupOpen, setSearchPopupOpen] = useState(false);
   const [notificationPopupOpen, setNotificationPopupOpen] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
@@ -87,24 +89,7 @@ export function Navbar() {
     logoutMutation.mutate();
   };
 
-  // PWA Install functionality - integrate with existing PWA system
-  const handlePWAInstall = () => {
-    // Clear any previous dismissal to allow the prompt to show again
-    sessionStorage.removeItem('pwa-install-dismissed');
-    
-    // Check if we can find the deferred prompt in the global scope
-    // or trigger a custom event to show the install prompt
-    const event = new CustomEvent('show-pwa-install-prompt');
-    window.dispatchEvent(event);
-    
-    // Fallback: If no prompt is available, show manual install guide
-    setTimeout(() => {
-      // Check if the prompt appeared, if not show fallback
-      if (!document.querySelector('[data-pwa-install-prompt]')) {
-        alert('To install this app:\n\n1. On Chrome/Edge: Click the install icon in the address bar\n2. On Safari: Tap Share → Add to Home Screen\n3. On Firefox: Look for the install option in the menu');
-      }
-    }, 100);
-  };
+
 
   const navItems = [
     { id: "home", label: t('nav.home'), path: "/" },
@@ -300,28 +285,30 @@ export function Navbar() {
                       </div>
                     </div>
                     
-                    {/* PWA Install Button */}
-                    <div
-                      onClick={handlePWAInstall}
-                      className="
-                        group relative flex items-center p-3 rounded-xl transition-all duration-300 cursor-pointer
-                        text-green-600 hover:text-white hover:shadow-lg hover:scale-[1.02] bg-green-50 hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 border border-green-100 hover:border-transparent transform-gpu
-                      "
-                      style={{ 
-                        fontFamily: 'Poppins, Inter, system-ui, sans-serif',
-                        fontWeight: '600'
-                      }}
-                    >
-                      <div className="flex items-center justify-center w-10 h-10 rounded-xl mr-3 bg-green-100 group-hover:bg-white group-hover:shadow-md group-hover:scale-110 transition-all duration-300">
-                        <Download className="h-5 w-5 text-green-600 group-hover:text-green-800 transition-colors duration-300" />
+                    {/* PWA Install Button - Only show if not installed */}
+                    {!isInstalled && (
+                      <div
+                        onClick={handleInstall}
+                        className="
+                          group relative flex items-center p-3 rounded-xl transition-all duration-300 cursor-pointer
+                          text-green-600 hover:text-white hover:shadow-lg hover:scale-[1.02] bg-green-50 hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 border border-green-100 hover:border-transparent transform-gpu
+                        "
+                        style={{ 
+                          fontFamily: 'Poppins, Inter, system-ui, sans-serif',
+                          fontWeight: '600'
+                        }}
+                      >
+                        <div className="flex items-center justify-center w-10 h-10 rounded-xl mr-3 bg-green-100 group-hover:bg-white group-hover:shadow-md group-hover:scale-110 transition-all duration-300">
+                          <Download className="h-5 w-5 text-green-600 group-hover:text-green-800 transition-colors duration-300" />
+                        </div>
+                        <span className="text-sm font-semibold">
+                          {t('nav.installApp', 'Install App')}
+                        </span>
+                        
+                        {/* Animated hover effect */}
+                        <div className="absolute inset-0 rounded-xl bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
                       </div>
-                      <span className="text-sm font-semibold">
-                        {t('nav.installApp', 'Install App')}
-                      </span>
-                      
-                      {/* Animated hover effect */}
-                      <div className="absolute inset-0 rounded-xl bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
-                    </div>
+                    )}
                     
                     {/* Enhanced Logout Button */}
                     <div
@@ -545,25 +532,27 @@ export function Navbar() {
                     {/* Mobile Separator */}
                     <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-3"></div>
                     
-                    {/* Mobile PWA Install Button */}
-                    <div
-                      onClick={handlePWAInstall}
-                      className="
-                        group relative flex items-center p-2.5 rounded-xl transition-all duration-300 cursor-pointer
-                        text-green-600 hover:text-white hover:shadow-lg hover:scale-[1.02] bg-green-50 hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 border border-green-100 hover:border-transparent transform-gpu mb-2
-                      "
-                      style={{ 
-                        fontFamily: 'Poppins, Inter, system-ui, sans-serif',
-                        fontWeight: '600'
-                      }}
-                    >
-                      <div className="flex items-center justify-center w-8 h-8 rounded-lg mr-3 bg-green-100 group-hover:bg-white group-hover:shadow-md transition-all duration-300">
-                        <Download className="h-4 w-4 text-green-600 group-hover:text-green-800 transition-colors duration-300" />
+                    {/* Mobile PWA Install Button - Only show if not installed */}
+                    {!isInstalled && (
+                      <div
+                        onClick={handleInstall}
+                        className="
+                          group relative flex items-center p-2.5 rounded-xl transition-all duration-300 cursor-pointer
+                          text-green-600 hover:text-white hover:shadow-lg hover:scale-[1.02] bg-green-50 hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 border border-green-100 hover:border-transparent transform-gpu mb-2
+                        "
+                        style={{ 
+                          fontFamily: 'Poppins, Inter, system-ui, sans-serif',
+                          fontWeight: '600'
+                        }}
+                      >
+                        <div className="flex items-center justify-center w-8 h-8 rounded-lg mr-3 bg-green-100 group-hover:bg-white group-hover:shadow-md transition-all duration-300">
+                          <Download className="h-4 w-4 text-green-600 group-hover:text-green-800 transition-colors duration-300" />
+                        </div>
+                        <span className="text-sm font-semibold">
+                          {t('nav.installApp', 'Install App')}
+                        </span>
                       </div>
-                      <span className="text-sm font-semibold">
-                        {t('nav.installApp', 'Install App')}
-                      </span>
-                    </div>
+                    )}
                     
                     {/* Mobile Logout Button */}
                     <div
